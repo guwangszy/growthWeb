@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">    
+<mapper namespace="com.suke.czx.modules.sys.dao.SysGradeDao">
+	<select id="queryObject" resultType="com.suke.czx.modules.sys.entity.SysGradeEntity">
+		select * from sys_grade where id = #{id}
+	</select>
+	
+	<select id="queryList" parameterType="map" resultType="com.suke.czx.modules.sys.entity.SysGradeEntity">
+		select sg.id,sc.`key` areaName,ss.`key` schoolName,sr.`key` gradeName,sl.`key` className from sys_grade sg
+		LEFT JOIN sys_config sc on sg.area_id=sc.`value` and sc.type='campusType'
+		LEFT JOIN sys_config ss on sg.school_id=ss.`value` and ss.type='schoolName'
+		LEFT JOIN sys_config sr on sg.grade_id=sr.`value` and sr.type='gradeName'
+		LEFT JOIN sys_config sl on sg.class_id=sl.`value` and sl.type='className'
+		<if test="areaName != null and areaName.trim() != ''">
+			where sc.`key` like concat('%',#{areaName},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from sys_grade sg
+		LEFT JOIN sys_config sc on sg.area_id=sc.`value` and sc.type='campusType'
+		LEFT JOIN sys_config ss on sg.school_id=ss.`value` and ss.type='schoolName'
+		LEFT JOIN sys_config sr on sg.grade_id=sr.`value` and sr.type='gradeName'
+		LEFT JOIN sys_config sl on sg.class_id=sl.`value` and sl.type='className'
+		<if test="areaName != null and areaName.trim() != ''">
+			where sc.`key` like concat('%',#{areaName},'%')
+		</if>
+	</select>
+	
+	<insert id="save" parameterType="com.suke.czx.modules.sys.entity.SysGradeEntity">
+		insert into sys_grade(`area_id`, `school_id`,`grade_id`,class_id)
+			values(#{areaId},#{schoolId},#{gradeId},#{classId})
+	</insert>
+	
+	<update id="update" parameterType="com.suke.czx.modules.sys.entity.SysGradeEntity">
+		update sys_grade set `area_id` = #{areaId}, `school_id` = #{schoolId},`grade_id` = #{gradeId}, class_id = #{classId}
+			 where id = #{id}
+	</update>
+
+	<delete id="deleteBatch" parameterType="int">
+		delete from sys_grade where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<!--查询班级成员列表-->
+	<select id="queryUserList" parameterType="map" resultType="com.suke.czx.modules.sys.entity.SysUserEntity">
+		select
+		s.user_id,
+		s.username,
+		s.password,
+		s.salt,
+		s.sex,
+		s.age,
+		s.email,
+		s.mobile,
+		s.status,
+		s.create_user_id,
+		s.create_time,
+		s.area_id,
+		s.school_id,
+		s.grade_id,
+		s.class_id,
+		sr.role_name
+		from sys_user s
+		LEFT JOIN
+		sys_user_role su on su.user_id=s.user_id
+		LEFT JOIN sys_role sr on su.role_id=sr.role_id
+		<where>
+			<if test="areaId != null and areaId != ''">
+				and s.`area_id` = #{areaId}
+			</if>
+			<if test="schoolId != null and schoolId != ''">
+				and s.`school_id` = #{schoolId}
+			</if>
+			<if test="gradeId != null and gradeId != ''">
+				and s.`grade_id` = #{gradeId}
+			</if>
+			<if test="classId != null and classId != ''">
+				and s.`class_id` = #{classId}
+			</if>
+			<if test="userName != null and userName.trim() != ''">
+				and s.username like concat('%',#{userName},'%')
+			</if>
+			<if test="id == null or id == '' ">
+				and s.area_id is null
+			</if>
+		</where>
+		<choose>
+			<when test="sidx != null and sidx.trim() != ''">
+				order by ${sidx} ${order}
+			</when>
+			<otherwise>
+				order by s.user_id desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	<!--查询班级成员数量-->
+	<select id="queryUserTotal" resultType="int">
+		select count(1) from
+		sys_user s
+		LEFT JOIN
+		sys_user_role su on su.user_id=s.user_id
+		LEFT JOIN sys_role sr on su.role_id=sr.role_id
+		<where>
+			<if test="areaId != null and areaId != ''">
+				and s.`area_id` = #{areaId}
+			</if>
+			<if test="schoolId != null and schoolId != ''">
+				and s.`school_id` = #{schoolId}
+			</if>
+			<if test="gradeId != null and gradeId != ''">
+				and s.`grade_id` = #{gradeId}
+			</if>
+			<if test="classId != null and classId != ''">
+				and s.`class_id` = #{classId}
+			</if>
+			<if test="userName != null and userName.trim() != ''">
+				and s.username like concat('%',#{userName},'%')
+			</if>
+			<if test="id == null or id == '' ">
+				and s.area_id is null
+			</if>
+		</where>
+	</select>
+	<!--更新班级成员-->
+	<update id="updateGradeUser" parameterType="java.util.Map">
+		update sys_user set `area_id` = #{areaId}, `school_id` = #{schoolId},`grade_id` = #{gradeId}, class_id = #{classId}
+		where user_id in
+		<foreach item="userId" collection="userIds" open="(" separator="," close=")">
+			#{userId}
+		</foreach>
+	</update>
+	
+</mapper>

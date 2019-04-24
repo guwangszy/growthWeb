@@ -27,7 +27,7 @@
 	</select>
 
 	<select id="queryByMobile" resultType="java.util.HashMap">
-		select * from tb_user where mobile = #{value}
+		select * from sys_user where mobile = #{mobile}
 	</select>
 	 
 	<insert id="save" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="userId">

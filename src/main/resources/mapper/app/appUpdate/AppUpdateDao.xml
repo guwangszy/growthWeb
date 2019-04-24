@@ -8,7 +8,21 @@
 	</select>
 
 	<select id="queryList" resultType="java.util.HashMap">
-		select * from tb_app_update
+		select * from sys_user
+        <where>
+            <if test="areaId != null and areaId != ''">
+                and `area_id` = #{areaId}
+            </if>
+            <if test="schoolId != null and schoolId != ''">
+                and `school_id` = #{schoolId}
+            </if>
+            <if test="gradeId != null and gradeId != ''">
+                and `grade_id` = #{gradeId}
+            </if>
+            <if test="classId != null and classId != ''">
+                and `class_id` = #{classId}
+            </if>
+        </where>
 	</select>
 	 
 	<insert id="save" parameterType="java.util.HashMap">
@@ -44,22 +58,18 @@
 		)
 	</insert>
 	 
-	<update id="update" parameterType="java.util.HashMap">
-		update tb_app_update 
+	<update id="update" parameterType="com.suke.czx.modules.sys.entity.SysUserEntity">
+		update sys_user
 		<set>
-			<if test="updateContent != null">`update_content` = #{updateContent}, </if>
-			<if test="versionCode != null">`version_code` = #{versionCode}, </if>
-			<if test="versionName != null">`version_name` = #{versionName}, </if>
-			<if test="url != null">`url` = #{url}, </if>
-			<if test="appFileName != null">`app_file_name` = #{appFileName}, </if>
-			<if test="md5 != null">`md5` = #{md5}, </if>
-			<if test="size != null">`size` = #{size}, </if>
-			<if test="isForce != null">`is_force` = #{isForce}, </if>
-			<if test="isIgnorable != null">`is_ignorable` = #{isIgnorable}, </if>
-			<if test="isSilent != null">`is_silent` = #{isSilent}, </if>
-			<if test="uploadTime != null">`upload_time` = #{uploadTime}</if>
+			<if test="username != null">`username` = #{username}, </if>
+			<if test="password != null">`password` = #{password}, </if>
+			<if test="sex != null">`sex` = #{sex}, </if>
+			<if test="age != null">`age` = #{age}, </if>
+			<if test="email != null">`email` = #{email}, </if>
+			<if test="mobile != null">`mobile` = #{mobile}, </if>
+			<if test="status != null">`status` = #{status}, </if>
 		</set>
-		where appid = #{appid}
+		where user_id = #{userId}
 	</update>
 	
 	<delete id="delete">

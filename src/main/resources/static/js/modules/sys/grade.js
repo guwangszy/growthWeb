@@ -112,7 +112,6 @@ var vm = new Vue({
                 ],
                 viewrecords: true,
                 height: 385,
-                width:1305,
                 rowNum: 10,
                 rowList : [10,30,50],
                 rownumbers: true,
@@ -143,6 +142,7 @@ var vm = new Vue({
             vm.showUserList = false;
             vm.showAddUpdate = false;
             vm.showNoGradeUser = true;
+
             $("#jqGrid2").jqGrid({
                 url: baseURL + 'sys/grade/userList',
                 datatype: "json",
@@ -167,12 +167,11 @@ var vm = new Vue({
                 ],
                 viewrecords: true,
                 height: 385,
-                width:'100%',
+                autowidth: true,
                 rowNum: 10,
                 rowList : [10,30,50],
                 rownumbers: true,
                 rownumWidth: 25,
-                autowidth:true,
                 multiselect: true,
                 pager: "#jqGridPager2",
                 jsonReader : {
@@ -190,7 +189,15 @@ var vm = new Vue({
                     //隐藏grid底部滚动条
                     $("#jqGrid2").closest(".ui-jqgrid-bdiv").css({ "overflow-x" : "hidden" });
                 }
-            }).trigger("reloadGrid");
+            })
+
+            $("#gbox_jqGrid2").css('width',"1280px")
+            $("#gbox_jqGrid2 table").css('width',"1280px")
+           // 1280px $("#jqGrid2").jqGrid('setGridParam',{
+           //  }).trigger("reloadGrid");
+           //  $("#jqGrid2 tr ").css('width',"1280px")
+           //  console.log($(window).width()-300)
+           //  console.log($("#jqGrid2").css('width'))
         },
         addGradeUser: function () {
             var userIds = getSelectedRows2();

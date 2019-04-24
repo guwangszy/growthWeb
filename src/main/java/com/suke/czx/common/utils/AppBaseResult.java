@@ -10,19 +10,19 @@ import java.util.HashMap;
 
 /**
  * @category app返回类
- * @author czx 
+ * @author czx
  * 2017-04-25
  */
 public class AppBaseResult<T> implements Serializable {
 
-	private int code = 500;
-	private String message = "";
+	private int errcode = 500;
+	private String errmsg = "";
 	private String data = "";
 	private String version = "1.0";
 	private String mobile = "";
 
 	public final static int ERROR = 401;
-	public final static int SUCCESS = 200;
+	public final static int SUCCESS = 0;
 	public final static int FAIL = 500;
 	public final static int TOKENFAIL = 1000;
 	public final static String KEY = "czx12345";
@@ -30,29 +30,29 @@ public class AppBaseResult<T> implements Serializable {
 
 	public static AppBaseResult success(String msg){
 		AppBaseResult appBaseResult = new AppBaseResult();
-		appBaseResult.setCode(SUCCESS);
-		appBaseResult.setMessage(msg);
+		appBaseResult.setErrcode(SUCCESS);
+		appBaseResult.setErrmsg(msg);
 		return appBaseResult;
 	}
 
 	public static AppBaseResult success(){
 		AppBaseResult appBaseResult = new AppBaseResult();
-		appBaseResult.setCode(SUCCESS);
-		appBaseResult.setMessage("请求成功");
+		appBaseResult.setErrcode(SUCCESS);
+		appBaseResult.setErrmsg("请求成功");
 		return appBaseResult;
 	}
 
 	public static AppBaseResult error(String msg){
 		AppBaseResult appBaseResult = new AppBaseResult();
-		appBaseResult.setCode(FAIL);
-		appBaseResult.setMessage(msg);
+		appBaseResult.setErrcode(FAIL);
+		appBaseResult.setErrmsg(msg);
 		return appBaseResult;
 	}
 
-	public static AppBaseResult error(int code,String msg){
+	public static AppBaseResult error(int errcode,String msg){
 		AppBaseResult appBaseResult = new AppBaseResult();
-		appBaseResult.setCode(code);
-		appBaseResult.setMessage(msg);
+		appBaseResult.setErrcode(errcode);
+		appBaseResult.setErrmsg(msg);
 		return appBaseResult;
 	}
 
@@ -60,19 +60,19 @@ public class AppBaseResult<T> implements Serializable {
 		return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, "未知异常，请联系管理员");
 	}
 
-	
-	public int getCode() {
-		return code;
+
+	public int getErrcode() {
+		return errcode;
 	}
-	public AppBaseResult setCode(int status) {
-		this.code = status;
+	public AppBaseResult setErrcode(int status) {
+		this.errcode = status;
 		return this;
 	}
-	public String getMessage() {
-		return message;
+	public String getErrmsg() {
+		return errmsg;
 	}
-	public AppBaseResult setMessage(String message) {
-		this.message = message;
+	public AppBaseResult setErrmsg(String message) {
+		this.errmsg= message;
 		return this;
 	}
 	public String getData() {
@@ -108,10 +108,19 @@ public class AppBaseResult<T> implements Serializable {
 		}
 		return mData;
 	}
-	
-	public AppBaseResult setEncryptData(T t) {
+
+	public AppBaseResult setData(T t) {
 		String mData = new Gson().toJson(t);
 		try {
+			this.data = mData;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return this;
+	}
+	public AppBaseResult setEncryptData(T t) {
+		String mData = new Gson().toJson(t);
+	/*	try {
 			if(!Tools.isEmpty(mData)){
 				this.data = CDESCrypt.encryptString(mData, KEY);
 				//this.data=mData;
@@ -120,7 +129,8 @@ public class AppBaseResult<T> implements Serializable {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
+		this.data = mData;
 		return this;
 	}
 
@@ -144,8 +154,8 @@ public class AppBaseResult<T> implements Serializable {
 	@Override
 	public String toString() {
 		return "{" +
-				"code='" + code + '\'' +
-				", message='" + message + '\'' +
+				"errcode='" + errcode + '\'' +
+				", errmsg='" + errmsg + '\'' +
 				", data='" + data + '\'' +
 				", version='" + version + '\'' +
 				", mobile='" + mobile + '\'' +

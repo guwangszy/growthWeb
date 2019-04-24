@@ -47,11 +47,11 @@
 				<a class="btn btn-primary" @click="removeGradeUser"><i class="fa fa-trash-o"></i>&nbsp;去除成员</a>
 				<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
 			</div>
-			<table id="jqGrid1" style="width: 1305px"></table>
-			<div id="jqGridPager1" style="width: 1305px"></div>
+			<table id="jqGrid1" style="width: 1305px !important"></table>
+			<div id="jqGridPager1" style="width: 1305px !important"></div>
 		</div>
 
-	<div v-show="showNoGradeUser">
+	<div v-show="showNoGradeUser" style="width: 1305px">
 		<div class="grid-btn">
 			<div class="form-group col-sm-2">
 				<input type="text" class="form-control" v-model="q.userName" @keyup.enter="queryUser" placeholder="姓名">
@@ -60,8 +60,8 @@
 			<a class="btn btn-primary"  @click="addGradeUser"><i class="fa fa-trash-o"></i>&nbsp;添加</a>
 			<input type="button" class="btn btn-warning" @click="reloadUserList" value="返回"/>
 		</div>
-		<table id="jqGrid2" style="width: 1305px"></table>
-		<div id="jqGridPager2" style="width: 1305px"></div>
+		<table id="jqGrid2" style="width: 1305px !important"></table>
+		<div id="jqGridPager2" style="width: 1305px !important"></div>
 	</div>
 
    	<div v-show="showAddUpdate" class="panel panel-default">

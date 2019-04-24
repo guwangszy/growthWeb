@@ -25,8 +25,8 @@ public class RRExceptionHandler extends AppBaseResult {
 	@ExceptionHandler(RRException.class)
 	public AppBaseResult handleRRException(RRException e){
 		AppBaseResult appBaseResult = new AppBaseResult();
-		appBaseResult.setCode(e.getCode());
-		appBaseResult.setMessage(e.getMessage());
+		appBaseResult.setErrcode(e.getCode());
+		appBaseResult.setErrmsg(e.getMessage());
 		return appBaseResult;
 	}
 

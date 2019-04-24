@@ -137,5 +137,9 @@
 			#{userId}
 		</foreach>
 	</update>
+
+
+
+
 	
 </mapper>

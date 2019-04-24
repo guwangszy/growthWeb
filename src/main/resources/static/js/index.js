@@ -85,6 +85,7 @@ var vm = new Vue({
 			});
 		},
         logout: function () {
+			console.log(baseURL);
             $.ajax({
                 type: "POST",
                 url: baseURL + "sys/logout",

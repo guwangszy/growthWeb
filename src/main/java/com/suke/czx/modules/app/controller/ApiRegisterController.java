@@ -4,13 +4,21 @@ package com.suke.czx.modules.app.controller;
 import com.google.gson.Gson;
 import com.suke.czx.common.utils.AppBaseResult;
 import com.suke.czx.common.validator.Assert;
+import com.suke.czx.common.validator.ValidatorUtils;
+import com.suke.czx.common.validator.group.AddGroup;
 import com.suke.czx.modules.app.service.user.AppUserService;
+import com.suke.czx.modules.sys.controller.AbstractController;
+import com.suke.czx.modules.sys.entity.SysUserEntity;
+import com.suke.czx.modules.sys.service.SysUserService;
+import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * 注册
@@ -20,20 +28,51 @@ import java.util.HashMap;
  */
 @RestController
 @RequestMapping("/app")
-public class ApiRegisterController {
+public class ApiRegisterController extends AbstractController {
 
     @Resource(name = "appUserService")
     private AppUserService appUserService;
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * 注册
      */
     @PostMapping("register")
     public AppBaseResult register(@RequestBody AppBaseResult appBaseResult) throws Exception {
-        HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.decryptData(),HashMap.class);
-        Assert.isNull(pd.get("mobile"), "手机号不能为空");
-        Assert.isNull(pd.get("password"), "密码不能为空");
-        appUserService.save(pd);
+        System.out.println(appBaseResult.toString());
+        HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+        JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
+        Assert.isNull(jsonObject.get("mobile"), "手机号不能为空");
+        Assert.isNull(jsonObject.get("password"), "密码不能为空");
+        SysUserEntity user =new SysUserEntity();
+        user.setUsername((String)jsonObject.get("username"));
+        user.setPassword((String)jsonObject.get("password"));
+        user.setSalt((String)jsonObject.get("salt"));
+        user.setSex(Long.parseLong((String)jsonObject.get("sex")));
+        user.setAge(Long.parseLong((String)jsonObject.get("age")));
+        user.setEmail((String)jsonObject.get("email"));
+        user.setMobile((String)jsonObject.get("mobile"));
+        user.setStatus(Integer.parseInt((String)jsonObject.get("status")));
+        //得到用戶角色信息
+        Long roleId = jsonObject.getLong("roleId");
+        List<Long> roleIdList= new ArrayList<Long>();
+        roleIdList.add(roleId);
+        user.setRoleIdList(roleIdList);
+        ValidatorUtils.validateEntity(user, AddGroup.class);
+
+        //user.setCreateUserId(getUserId());
+        sysUserService.save(user);
+       // appUserService.save(pd);
         return AppBaseResult.success();
+    }
+
+    public static void main (String [] args) {
+        //String s="data='{\"username\":\"lixia\",\"password\":\"312125\",\"sex\":\"0\",\"age\":\"12\",\"email\":\"522248881@qq.com\",\"mobile\":\"18336362519\",\"status\":\"1\",\"roleIdList\":\"['1']\"}'";
+         List<String> list=new ArrayList<String>();
+         list.add("1");
+         Map<String,Object> map=new HashMap<String,Object>();
+         map.put("role",list);
+         System.out.println(JSONObject.fromObject(map).toString());
     }
 }

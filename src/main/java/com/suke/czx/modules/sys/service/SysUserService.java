@@ -62,7 +62,7 @@ public interface SysUserService {
 	 * 删除用户
 	 */
 	void deleteBatch(Long[] userIds);
-	
+
 	/**
 	 * 修改密码
 	 * @param userId       用户ID

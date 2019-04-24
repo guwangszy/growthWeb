@@ -3,9 +3,10 @@ package com.suke.czx.modules.app.service.user;
 import com.suke.czx.common.exception.RRException;
 import com.suke.czx.common.validator.Assert;
 import com.suke.czx.modules.app.service.ServiceSupport;
-import com.suke.czx.modules.user.entity.UserEntity;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.HashMap;
 
@@ -28,8 +29,9 @@ public class AppUserService extends ServiceSupport {
         Assert.isNull(user, "用户不存在");
 
         //密码错误
-        String userpassword = DigestUtils.sha256Hex(password);
-        if(!user.get("password").equals(userpassword)){
+       // String userpassword = DigestUtils.sha256Hex(password);
+        String userpassword = password;
+        if(!user.get("password").equals(new Sha256Hash(password, user.get("salt")).toHex())){
             throw new RRException("密码错误");
         }
         return user;

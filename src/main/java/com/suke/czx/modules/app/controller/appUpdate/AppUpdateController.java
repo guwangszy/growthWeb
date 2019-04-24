@@ -1,20 +1,34 @@
 package com.suke.czx.modules.app.controller.appUpdate;
 
-import java.util.HashMap;
 import com.google.gson.Gson;
-import com.suke.czx.common.utils.*;
-import java.util.List;
-import org.slf4j.LoggerFactory;
+import com.suke.czx.common.utils.AppBaseResult;
+import com.suke.czx.common.utils.PageUtils;
+import com.suke.czx.common.utils.Query;
+import com.suke.czx.common.validator.Assert;
+import com.suke.czx.common.validator.ValidatorUtils;
+import com.suke.czx.common.validator.group.AddGroup;
+import com.suke.czx.modules.app.service.appUpdate.AppUpdateService;
+import com.suke.czx.modules.sys.controller.AbstractController;
+import com.suke.czx.modules.sys.entity.SysUserEntity;
+import com.suke.czx.modules.sys.service.SysUserService;
+import com.suke.czx.modules.sys.service.SysUserTokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import net.sf.json.JSONObject;
+import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
-import com.suke.czx.modules.app.service.appUpdate.AppUpdateService;
+
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -27,12 +41,18 @@ import javax.annotation.Resource;
 @Api(value = "API - AppUpdateController ", description = "APP版本管理")
 @RestController
 @RequestMapping("/app")
-public class AppUpdateController {
+public class AppUpdateController extends AbstractController {
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(getClass());
 
     @Resource(name = "appUpdateService")
 	private AppUpdateService appUpdateService;
+
+	@Autowired
+	private SysUserService sysUserService;
+
+    @Autowired
+    private SysUserTokenService sysUserTokenService;
 	
 	/**
 	 * 列表
@@ -79,18 +99,92 @@ public class AppUpdateController {
 	}
 	
 	/**
-	 * 修改
+	 * 修改用戶信息
 	 */
     @ApiOperation(value="修改", notes="修改")
     @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
 	@PostMapping("/appUpdate/update")
 	public AppBaseResult update(@RequestBody AppBaseResult appBaseResult)throws Exception{
-        logger.info("AppUpdateController 修改",appBaseResult.decryptData());
+		logger.info("AppUpdateController 修改",appBaseResult.decryptData());
+		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
+		Assert.isNull(jsonObject.get("mobile"), "手机号不能为空");
+		Assert.isNull(jsonObject.get("password"), "密码不能为空");
+		SysUserEntity user =new SysUserEntity();
+		user.setUserId(Long.parseLong((String)jsonObject.get("userid")));
+		user.setUsername((String)jsonObject.get("username"));
+		user.setPassword((String)jsonObject.get("password"));
+		user.setSalt((String)jsonObject.get("salt"));
+		user.setSex(Long.parseLong((String)jsonObject.get("sex")));
+		user.setAge(Long.parseLong((String)jsonObject.get("age")));
+		user.setEmail((String)jsonObject.get("email"));
+		user.setMobile((String)jsonObject.get("mobile"));
+		user.setStatus(Integer.parseInt((String)jsonObject.get("status")));
+		//得到用戶角色信息
+		Long roleId = jsonObject.getLong("roleId");
+		List<Long> roleIdList= new ArrayList<Long>();
+		roleIdList.add(roleId);
+		user.setRoleIdList(roleIdList);
+		ValidatorUtils.validateEntity(user, AddGroup.class);
+
+		//user.setCreateUserId(getUserId());
+		sysUserService.update(user);
+		return AppBaseResult.success();
+
+
+        /*logger.info("AppUpdateController 修改",appBaseResult.decryptData());
         HashMap<String,Object> params = new Gson().fromJson(appBaseResult.decryptData(),HashMap.class);
 		appUpdateService.updateInfo(params);
-        return AppBaseResult.success();
+        return AppBaseResult.success();*/
 	}
-	
+
+	/**
+	 * 修改用戶密码
+	 */
+	@ApiOperation(value="修改密码", notes="修改密码")
+	@ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
+	@PostMapping("/appUpdate/updatePassword")
+	public AppBaseResult updatePassword(@RequestBody AppBaseResult appBaseResult)throws Exception{
+		logger.info("AppUpdateController 修改密码",appBaseResult.decryptData());
+		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
+		String password=(String)jsonObject.get("password");
+		String newPassword=(String)jsonObject.get("newPassword");
+		Assert.isBlank(newPassword, "新密码不为能空");
+		Long userId=Long.parseLong((String)jsonObject.get("userid"));
+		SysUserEntity user = sysUserService.queryObject(userId);
+		//sha256加密
+		password = new Sha256Hash(password, user.getSalt()).toHex();
+		//sha256加密
+		newPassword = new Sha256Hash(newPassword, user.getSalt()).toHex();
+
+		//更新密码
+		int count = sysUserService.updatePassword(userId, password, newPassword);
+		if(count == 0){
+			return AppBaseResult.error("原密码不正确");
+		}
+
+		return AppBaseResult.success();
+	}
+
+    /**
+     * 退出登录
+     */
+    @ApiOperation(value="退出登录", notes="退出登录")
+    @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
+    @PostMapping("/appUpdate/logout")
+    public AppBaseResult logout(@RequestBody AppBaseResult appBaseResult)throws Exception{
+        logger.info("AppUpdateController 退出登录",appBaseResult.decryptData());
+        HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+        JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
+        Long userId=Long.parseLong((String)jsonObject.get("userid"));
+        sysUserTokenService.logout(userId);
+
+        return AppBaseResult.success();
+    }
+
+
+
 	/**
 	 * 删除
 	 */

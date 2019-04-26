@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">    
+<mapper namespace="com.suke.czx.modules.sys.dao.SysAdviceDao">
+	<!--获取单条通知信息-->
+	<select id="queryObject" resultType="com.suke.czx.modules.sys.entity.SysAdviceEntity">
+		select * from sys_advice where id = #{id}
+	</select>
+
+	<!--获取单条发布信息-->
+	<select id="queryIssue" resultType="com.suke.czx.modules.sys.entity.SysIssueEntity">
+		select * from sys_issue where id = #{id}
+	</select>
+
+	<!--新增通知-->
+	<insert id="save" parameterType="com.suke.czx.modules.sys.entity.SysAdviceEntity">
+		insert into sys_advice(`title`, `content`,`frequency`,start_time,end_time,create_user,create_time)
+			values(#{title},#{content},#{frequency},now(),#{endTime},#{createUser},now())
+	</insert>
+	<!--新增发布-->
+	<insert id="saveIssue" parameterType="com.suke.czx.modules.sys.entity.SysIssueEntity">
+		insert into sys_issue(`advice_id`, `user_id`,done_content,`create_time`)
+		values(#{adviceId},#{userId},#{doneContent},now())
+	</insert>
+	<!--新增评论-->
+	<insert id="saveComment" parameterType="com.suke.czx.modules.sys.entity.SysCommentEntity">
+		insert into sys_comment(`issue_id`, `type`,user_id,comment_content,`create_time`)
+		values(#{issueId},#{type},#{userId},#{commentContent},now())
+	</insert>
+	<!--获取通知表信息-->
+	<select id="queryList" parameterType="java.util.Map" resultType="com.suke.czx.modules.sys.entity.SysAdviceEntity">
+		select * from sys_advice where  frequency is NULL or <![CDATA[ ( start_time <= now()  and end_time >= now() and frequency = DAYOFWEEK(now()) ) ]]>
+		 ORDER BY create_time DESC
+	</select>
+
+	<!--获取通知表数量-->
+	<select id="queryTotal" parameterType="java.util.Map" resultType="int">
+		select count(1) from sys_advice
+	</select>
+
+</mapper>

@@ -114,16 +114,6 @@ public class AppBaseResult<T> implements Serializable {
 		}
 		return mData;
 	}
-
-	public AppBaseResult setResultData(T t) {
-		String mData = new Gson().toJson(t);
-		try {
-			this.data = mData;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return this;
-	}
 	public AppBaseResult setEncryptData(T t) {
 		String mData = new Gson().toJson(t);
 	/*	try {

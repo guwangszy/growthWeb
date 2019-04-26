@@ -48,17 +48,15 @@ public class ApiLoginController {
     )
     @PostMapping("login")
     public AppBaseResult login(@RequestBody AppBaseResult appBaseResult) throws Exception {
-        logger.info("用户登录",appBaseResult.decryptData());
         HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
         JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
         Assert.isNull(jsonObject.get("mobile"), "手机号不能为空");
         Assert.isNull(jsonObject.get("password"), "密码不能为空");
-        if (!Assert.checkCellphone(pd.get("mobile").toString())){
+        if (!Assert.checkCellphone(jsonObject.get("mobile").toString())){
             throw new RRException("请输入正确的手机号");
         }
-        pd.put("password",jsonObject.get("password"));
         //用户登录
-        HashMap<String,Object> user = appUserService.queryByMobile(pd);
+        HashMap<String,Object> user = appUserService.queryByMobile(jsonObject);
         //生成token
         String token = jwtUtils.generateToken(user.get("user_id"));
         user.put("token", token);

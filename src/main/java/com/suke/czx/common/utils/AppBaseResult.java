@@ -18,7 +18,7 @@ public class AppBaseResult<T> implements Serializable {
 
 	private int errcode = 500;
 	private String errmsg = "";
-	private String data = "";
+	private JSONObject data = null;
 	private String version = "1.0";
 	private String mobile = "";
 
@@ -76,17 +76,18 @@ public class AppBaseResult<T> implements Serializable {
 		this.errmsg= message;
 		return this;
 	}
-	public String getData() {
+	public JSONObject getData() {
 		return  this.data;
 	}
 
-	public void setData(Object data) {
-		if( data instanceof  java.util.LinkedHashMap){
-			JSONObject jsonObject =JSONObject.fromObject(data);
-			this.data = jsonObject.toString();
-		}else{
-			this.data = String.valueOf(data);
-		}
+	public void setData(JSONObject data) {
+//		if( data instanceof  java.util.LinkedHashMap){
+//			JSONObject jsonObject =JSONObject.fromObject(data);
+//			this.data = jsonObject.toString();
+//		}else{
+//			this.data = String.valueOf(data);
+//		}
+		this.data=data;
 	}
 
 	public HashMap<String,Object> decryptData(String data) {
@@ -104,9 +105,9 @@ public class AppBaseResult<T> implements Serializable {
 
 	public String decryptData() {
 		String mData = null;
-		if(!Tools.isEmpty(this.data)){
+		if(!Tools.isEmpty(this.data.toString())){
 			try {
-				mData = CDESCrypt.decryptString(this.data, KEY);
+				mData = CDESCrypt.decryptString(this.data.toString(), KEY);
 				//mData=this.data;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -115,7 +116,7 @@ public class AppBaseResult<T> implements Serializable {
 		return mData;
 	}
 	public AppBaseResult setEncryptData(T t) {
-		String mData = new Gson().toJson(t);
+//		String mData = new Gson().toJson(t);
 	/*	try {
 			if(!Tools.isEmpty(mData)){
 				this.data = CDESCrypt.encryptString(mData, KEY);
@@ -126,7 +127,8 @@ public class AppBaseResult<T> implements Serializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}*/
-		this.data = mData;
+
+		this.data = JSONObject.fromObject(t);
 		return this;
 	}
 

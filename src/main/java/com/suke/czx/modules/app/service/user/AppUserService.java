@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by czx on 2018/1/5.
@@ -22,7 +23,7 @@ public class AppUserService extends ServiceSupport {
      * @return
      * @throws Exception
      */
-    public HashMap<String,Object> queryByMobile(HashMap<String,Object> param) throws Exception {
+    public HashMap<String,Object> queryByMobile(Map<String,Object> param) throws Exception {
         String mobile = param.get("mobile").toString();
         String password = param.get("password").toString();
         HashMap<String,Object> user = findForObject("api.AppUserDao.queryByMobile", mobile);

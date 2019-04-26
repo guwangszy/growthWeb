@@ -3,6 +3,7 @@ package com.suke.czx.common.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import net.sf.json.JSONObject;
 import org.apache.http.HttpStatus;
 
 import java.io.Serializable;
@@ -79,8 +80,13 @@ public class AppBaseResult<T> implements Serializable {
 		return  this.data;
 	}
 
-	public void setData(String data) {
-		this.data = data;
+	public void setData(Object data) {
+		if( data instanceof  java.util.LinkedHashMap){
+			JSONObject jsonObject =JSONObject.fromObject(data);
+			this.data = jsonObject.toString();
+		}else{
+			this.data = String.valueOf(data);
+		}
 	}
 
 	public HashMap<String,Object> decryptData(String data) {
@@ -109,7 +115,7 @@ public class AppBaseResult<T> implements Serializable {
 		return mData;
 	}
 
-	public AppBaseResult setData(T t) {
+	public AppBaseResult setResultData(T t) {
 		String mData = new Gson().toJson(t);
 		try {
 			this.data = mData;

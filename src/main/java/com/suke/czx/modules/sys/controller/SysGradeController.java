@@ -162,6 +162,7 @@ public class SysGradeController extends AbstractController {
 		SysGradeEntity grade = sysGradeService.queryObject(id);
 		Map<String, Object>params=new HashMap<String, Object>();
 		params.put("userIds",list);
+		params.put("gradeClassId",grade.getId());
 		params.put("areaId",grade.getAreaId());
 		params.put("schoolId",grade.getSchoolId());
 		params.put("gradeId",grade.getGradeId());

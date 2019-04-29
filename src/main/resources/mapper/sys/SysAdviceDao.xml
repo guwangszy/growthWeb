@@ -13,13 +13,13 @@
 
 	<!--新增通知-->
 	<insert id="save" parameterType="com.suke.czx.modules.sys.entity.SysAdviceEntity">
-		insert into sys_advice(`title`, `content`,`frequency`,start_time,end_time,create_user,create_time)
-			values(#{title},#{content},#{frequency},now(),#{endTime},#{createUser},now())
+		insert into sys_advice(`title`, `grade_id`,`content`,`frequency`,start_time,end_time,create_user,create_time)
+			values(#{title},#{gradeId},#{content},#{frequency},now(),#{endTime},#{createUser},now())
 	</insert>
 	<!--新增发布-->
 	<insert id="saveIssue" parameterType="com.suke.czx.modules.sys.entity.SysIssueEntity">
-		insert into sys_issue(`advice_id`, `user_id`,done_content,`create_time`)
-		values(#{adviceId},#{userId},#{doneContent},now())
+		insert into sys_issue(`advice_id`, `grade_id`, `user_id`,done_content,`create_time`)
+		values(#{adviceId},#{gradeId},#{userId},#{doneContent},now())
 	</insert>
 	<!--新增评论-->
 	<insert id="saveComment" parameterType="com.suke.czx.modules.sys.entity.SysCommentEntity">
@@ -28,13 +28,47 @@
 	</insert>
 	<!--获取通知表信息-->
 	<select id="queryList" parameterType="java.util.Map" resultType="com.suke.czx.modules.sys.entity.SysAdviceEntity">
-		select * from sys_advice where  frequency is NULL or <![CDATA[ ( start_time <= now()  and end_time >= now() and frequency = DAYOFWEEK(now()) ) ]]>
+		select * from sys_advice where grade_id=#{gradeId}
+		and ( frequency is NULL or <![CDATA[ ( start_time <= now()  and end_time >= now() and frequency = DAYOFWEEK(now()) ) ]]> )
 		 ORDER BY create_time DESC
+	</select>
+
+	<!--获取班级圈列表-->
+	<select id="queryCycleList" parameterType="java.util.Map" resultType="java.util.Map">
+		select
+		si.id,
+		sa.title,
+		sa.content,
+		sb.num,
+		si.done_content doneContent
+		from
+		sys_issue si
+		LEFT JOIN sys_advice sa on sa.id=si.advice_id
+		LEFT JOIN sys_comment sc on sc.id=si.id
+		LEFT JOIN (select count(type) num,issue_id from sys_comment where type=1 GROUP BY issue_id) sb on sb.issue_id=si.id
+		where si.grade_id=#{gradeId}
+		GROUP BY si.create_time desc
+	</select>
+	<!--获取评论list-->
+	<select id="queryCommentList"  resultType="java.util.Map">
+		select
+		su.username,
+		sc.comment_content commentContent
+		from
+		sys_comment sc
+		LEFT JOIN sys_user su on su.user_id=sc.user_id
+		where
+		type=2
+		AND
+		sc.issue_id=#{issueId}
+		GROUP BY sc.comment_content DESC
 	</select>
 
 	<!--获取通知表数量-->
 	<select id="queryTotal" parameterType="java.util.Map" resultType="int">
 		select count(1) from sys_advice
 	</select>
+
+
 
 </mapper>

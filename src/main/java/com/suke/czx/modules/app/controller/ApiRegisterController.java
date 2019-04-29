@@ -4,8 +4,6 @@ package com.suke.czx.modules.app.controller;
 import com.google.gson.Gson;
 import com.suke.czx.common.utils.AppBaseResult;
 import com.suke.czx.common.validator.Assert;
-import com.suke.czx.common.validator.ValidatorUtils;
-import com.suke.czx.common.validator.group.AddGroup;
 import com.suke.czx.modules.app.service.user.AppUserService;
 import com.suke.czx.modules.sys.controller.AbstractController;
 import com.suke.czx.modules.sys.entity.SysUserEntity;
@@ -18,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 注册
@@ -46,20 +47,19 @@ public class ApiRegisterController extends AbstractController {
         Assert.isNull(jsonObject.get("mobile"), "手机号不能为空");
         Assert.isNull(jsonObject.get("password"), "密码不能为空");
         SysUserEntity user =new SysUserEntity();
-        user.setUsername((String)jsonObject.get("username"));
-        user.setPassword((String)jsonObject.get("password"));
-        user.setSalt((String)jsonObject.get("salt"));
-        user.setSex(Long.parseLong((String)jsonObject.get("sex")));
-        user.setAge(Long.parseLong((String)jsonObject.get("age")));
-        user.setEmail((String)jsonObject.get("email"));
-        user.setMobile((String)jsonObject.get("mobile"));
-        user.setStatus(Integer.parseInt((String)jsonObject.get("status")));
+        user.setUsername(String.valueOf(jsonObject.get("username")));
+        user.setPassword(String.valueOf(jsonObject.get("password")));
+        user.setSex(jsonObject.getLong("sex"));
+        user.setAge(jsonObject.getLong("age"));
+        user.setEmail(String.valueOf(jsonObject.get("email")));
+        user.setMobile(String.valueOf(jsonObject.get("mobile")));
+        user.setStatus(1);
         //得到用戶角色信息
         Long roleId = jsonObject.getLong("roleId");
         List<Long> roleIdList= new ArrayList<Long>();
         roleIdList.add(roleId);
         user.setRoleIdList(roleIdList);
-        ValidatorUtils.validateEntity(user, AddGroup.class);
+       // ValidatorUtils.validateEntity(user, AddGroup.class);
 
         //user.setCreateUserId(getUserId());
         sysUserService.save(user);

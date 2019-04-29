@@ -5,8 +5,6 @@ import com.suke.czx.common.utils.AppBaseResult;
 import com.suke.czx.common.utils.PageUtils;
 import com.suke.czx.common.utils.Query;
 import com.suke.czx.common.validator.Assert;
-import com.suke.czx.common.validator.ValidatorUtils;
-import com.suke.czx.common.validator.group.AddGroup;
 import com.suke.czx.modules.app.service.appUpdate.AppUpdateService;
 import com.suke.czx.modules.sys.controller.AbstractController;
 import com.suke.czx.modules.sys.entity.SysUserEntity;
@@ -109,23 +107,22 @@ public class AppUpdateController extends AbstractController {
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		Assert.isNull(jsonObject.get("mobile"), "手机号不能为空");
-		Assert.isNull(jsonObject.get("password"), "密码不能为空");
+		//Assert.isNull(jsonObject.get("password"), "密码不能为空");
 		SysUserEntity user =new SysUserEntity();
-		user.setUserId(Long.parseLong((String)jsonObject.get("userid")));
-		user.setUsername((String)jsonObject.get("username"));
-		user.setPassword((String)jsonObject.get("password"));
-		user.setSalt((String)jsonObject.get("salt"));
-		user.setSex(Long.parseLong((String)jsonObject.get("sex")));
-		user.setAge(Long.parseLong((String)jsonObject.get("age")));
-		user.setEmail((String)jsonObject.get("email"));
-		user.setMobile((String)jsonObject.get("mobile"));
-		user.setStatus(Integer.parseInt((String)jsonObject.get("status")));
+		user.setUserId(jsonObject.getLong("userId"));
+		user.setUsername(jsonObject.getString("username"));
+		//user.setPassword(jsonObject.getString("password"));
+		user.setSex(jsonObject.getLong("sex"));
+		user.setAge(jsonObject.getLong("age"));
+		user.setEmail(jsonObject.getString("email"));
+		user.setMobile(jsonObject.getString("mobile"));
+		//user.setStatus(Integer.parseInt((String)jsonObject.get("status")));
 		//得到用戶角色信息
 		Long roleId = jsonObject.getLong("roleId");
 		List<Long> roleIdList= new ArrayList<Long>();
 		roleIdList.add(roleId);
 		user.setRoleIdList(roleIdList);
-		ValidatorUtils.validateEntity(user, AddGroup.class);
+		//ValidatorUtils.validateEntity(user, AddGroup.class);
 
 		//user.setCreateUserId(getUserId());
 		sysUserService.update(user);
@@ -148,10 +145,10 @@ public class AppUpdateController extends AbstractController {
 		logger.info("AppUpdateController 修改密码",appBaseResult.decryptData());
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
-		String password=(String)jsonObject.get("password");
-		String newPassword=(String)jsonObject.get("newPassword");
+		String password=jsonObject.getString("password");
+		String newPassword=jsonObject.getString("newPassword");
 		Assert.isBlank(newPassword, "新密码不为能空");
-		Long userId=Long.parseLong((String)jsonObject.get("userid"));
+		Long userId=jsonObject.getLong("userId");
 		SysUserEntity user = sysUserService.queryObject(userId);
 		//sha256加密
 		password = new Sha256Hash(password, user.getSalt()).toHex();
@@ -177,7 +174,7 @@ public class AppUpdateController extends AbstractController {
         logger.info("AppUpdateController 退出登录",appBaseResult.decryptData());
         HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
         JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
-        Long userId=Long.parseLong((String)jsonObject.get("userid"));
+        Long userId=jsonObject.getLong("userid");
         sysUserTokenService.logout(userId);
 
         return AppBaseResult.success();

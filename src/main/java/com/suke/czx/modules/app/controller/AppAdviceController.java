@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -78,7 +80,8 @@ public class AppAdviceController extends AbstractController {
 		SysAdviceEntity advice =new SysAdviceEntity();
 		advice.setTitle((String)jsonObject.get("title"));
 		advice.setContent((String)jsonObject.get("content"));
-		advice.setFrequency(Long.parseLong((String)jsonObject.get("frequency")));
+		advice.setFrequency(jsonObject.getLong("frequency"));
+		advice.setGradeId(jsonObject.getLong("gradeId"));
 		int cycle=Integer.parseInt((String)jsonObject.get("cycle"));
 		//获取结束时间
 		Calendar calendar = Calendar.getInstance();
@@ -101,6 +104,7 @@ public class AppAdviceController extends AbstractController {
 		SysIssueEntity issue =new SysIssueEntity();
 		issue.setAdviceId(Long.parseLong((String)jsonObject.get("adviceId")));
 		issue.setUserId(Long.parseLong((String)jsonObject.get("userId")));
+		issue.setGradeId(jsonObject.getLong("gradeId"));
 		issue.setDoneContent((String)jsonObject.get("doneContent"));
 		sysAdviceService.saveIssue(issue);
 		return AppBaseResult.success();
@@ -124,6 +128,50 @@ public class AppAdviceController extends AbstractController {
 		return AppBaseResult.success();
 	}
 
+	/**
+	 * 获取通知详情
+	 */
+	@ApiOperation(value="获取通知详情", notes="获取通知详情")
+	@ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
+	@PostMapping("/appAdvice/getAdvice")
+	public AppBaseResult getAdvice(@RequestBody AppBaseResult appBaseResult)throws Exception{
+		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
+		Long id=jsonObject.getLong("id");
+		SysAdviceEntity advice=sysAdviceService.queryObject(id);
+		JSONObject json=JSONObject.fromObject(advice);
+		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		json.put("createTime",sdf.format(advice.getCreateTime()));
+		json.put("startTime",sdf.format(advice.getStartTime()));
+		json.put("endTime",sdf.format(advice.getEndTime()));
+		return AppBaseResult.success().setEncryptData(json);
+	}
+
+	/**
+	 * 班级圈列表
+	 */
+	@ApiOperation(value="班级圈列表", notes="班级圈列表")
+	@ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
+	@PostMapping("/appAdvice/gradeCycleList")
+	public AppBaseResult gradeCycleList(@RequestBody AppBaseResult appBaseResult)throws Exception{
+		logger.info("AppAdviceController 列表",appBaseResult.decryptData());
+		HashMap<String,Object> params = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+		JSONObject jsonObject=JSONObject.fromObject(params.get("data"));
+		//查询列表数据
+		Query query = new Query(jsonObject);
+		query.isPaging(true);
+		List<Map<String,Object>> cycleList = sysAdviceService.queryCycleList(query);
+		for(Map<String,Object> map:cycleList){
+		Long issueId=Long.parseLong(String.valueOf(map.get("id")));
+		List<Map<String,Object>> commentList=sysAdviceService.queryCommentList(issueId);
+		map.put("commentList",commentList);
+		}
+		PageUtils pageUtil = new PageUtils(cycleList, query.getTotle(), query.getLimit(), query.getPage());
+		Map<String,Object> list=new HashMap<String,Object>();
+		list.put("cycleList",cycleList);
+		list.put("total",pageUtil.getTotalCount());
+		return AppBaseResult.success().setEncryptData(list);
+	}
 /*	public static  void  main(String []args){
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -1);

@@ -44,4 +44,8 @@ public interface SysAdviceDao extends BaseDao<SysAdviceEntity> {
 	void saveComment(SysCommentEntity comment);
 
 	void saveIssue(SysIssueEntity issue);
+
+	List <Map<String, Object>> queryCycleList(Map<String, Object> map);
+
+	List <Map<String, Object>> queryCommentList(Long id);
 }

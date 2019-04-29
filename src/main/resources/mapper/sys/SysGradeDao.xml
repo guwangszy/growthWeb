@@ -131,7 +131,7 @@
 	</select>
 	<!--更新班级成员-->
 	<update id="updateGradeUser" parameterType="java.util.Map">
-		update sys_user set `area_id` = #{areaId}, `school_id` = #{schoolId},`grade_id` = #{gradeId}, class_id = #{classId}
+		update sys_user set `grade_class_id` = #{gradeClassId},`area_id` = #{areaId}, `school_id` = #{schoolId},`grade_id` = #{gradeId}, class_id = #{classId}
 		where user_id in
 		<foreach item="userId" collection="userIds" open="(" separator="," close=")">
 			#{userId}

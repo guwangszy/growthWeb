@@ -26,8 +26,31 @@
 		select count(*) from tb_user 
 	</select>
 
-	<select id="queryByMobile" resultType="java.util.HashMap">
-		select * from sys_user where mobile = #{mobile}
+	<select id="queryByMobile" resultType="java.util.Map">
+		select
+			s.user_id  userId,
+			s.grade_class_id  gradeClassId,
+			s.username,
+			s.password,
+			s.salt,
+			s.sex,
+			s.age,
+			s.email,
+			s.mobile,
+			s.status,
+			s.create_user_id  createUserId,
+			s.create_time createTime,
+			s.area_id  areaId,
+			s.school_id  schoolId,
+			s.grade_id gradeId,
+			s.class_id  classId,
+			sr.role_id  roleId,
+			sr.role_name roleName
+			from sys_user s
+			LEFT JOIN
+			sys_user_role su on su.user_id=s.user_id
+			LEFT JOIN sys_role sr on su.role_id=sr.role_id
+		where  s.username = #{mobile,jdbcType=VARCHAR}
 	</select>
 	 
 	<insert id="save" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="userId">

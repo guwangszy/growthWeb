@@ -7,6 +7,23 @@
 		select * from tb_app_update where appid = #{value}
 	</select>
 
+	<select id="querySchool" parameterType="java.util.Map" resultType="java.util.Map">
+		select sc.`key` area,ss.`key` school,sr.`key` grade,sl.`key` className from sys_grade sg
+		LEFT JOIN sys_config sc on sg.area_id=sc.`value` and sc.type='campusType'
+		LEFT JOIN sys_config ss on sg.school_id=ss.`value` and ss.type='schoolName'
+		LEFT JOIN sys_config sr on sg.grade_id=sr.`value` and sr.type='gradeName'
+		LEFT JOIN sys_config sl on sg.class_id=sl.`value` and sl.type='className'
+		where
+		sc.`value`=#{areaId}
+		AND
+		ss.`value`=#{schoolId}
+		AND
+		sr.`value`=#{gradeId}
+		AND
+		sl.`value`=#{classId}
+		limit 1
+	</select>
+
 	<select id="queryList" resultType="java.util.HashMap">
 		select * from sys_user
         <where>

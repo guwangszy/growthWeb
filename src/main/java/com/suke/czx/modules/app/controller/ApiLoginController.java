@@ -2,7 +2,6 @@ package com.suke.czx.modules.app.controller;
 
 
 import com.google.gson.Gson;
-import com.suke.czx.common.exception.RRException;
 import com.suke.czx.common.utils.AppBaseResult;
 import com.suke.czx.common.validator.Assert;
 import com.suke.czx.modules.app.service.user.AppUserService;
@@ -52,13 +51,13 @@ public class ApiLoginController {
         JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
         Assert.isNull(jsonObject.get("mobile"), "手机号不能为空");
         Assert.isNull(jsonObject.get("password"), "密码不能为空");
-        if (!Assert.checkCellphone(jsonObject.get("mobile").toString())){
+       /* if (!Assert.checkCellphone(jsonObject.get("mobile").toString())){
             throw new RRException("请输入正确的手机号");
-        }
+        }*/
         //用户登录
         HashMap<String,Object> user = appUserService.queryByMobile(jsonObject);
         //生成token
-        String token = jwtUtils.generateToken(user.get("user_id"));
+        String token = jwtUtils.generateToken(user.get("userId"));
         user.put("token", token);
         user.put("expire", jwtUtils.getExpire());
         return AppBaseResult.success().setEncryptData(user);

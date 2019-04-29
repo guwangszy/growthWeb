@@ -2,8 +2,10 @@ package com.suke.czx.modules.app.service.appUpdate;
 
 import com.suke.czx.modules.app.service.ServiceSupport;
 import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * APP版本管理
@@ -25,6 +27,9 @@ public class  AppUpdateService extends  ServiceSupport{
         return findForList("appUpdate.AppUpdateDao.queryList",param);
     }
 
+    public HashMap<String,Object> querySchool(Map<String,Object> param) throws Exception{
+        return findForObject("appUpdate.AppUpdateDao.querySchool",param);
+    }
 
     public void saveInfo(HashMap<String,Object> param) throws Exception{
         insert("appUpdate.AppUpdateDao.save",param);

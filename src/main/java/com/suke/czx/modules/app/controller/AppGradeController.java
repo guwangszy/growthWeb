@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -64,11 +65,25 @@ public class AppGradeController extends AbstractController {
         HashMap<String,Object> params = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(params.get("data"));
 		//查询列表数据
-        Query query = new Query(jsonObject);
+		Long areaId=jsonObject.getLong("areaId");
+		Long schoolId=jsonObject.getLong("schoolId");
+		Long gradeId=jsonObject.getLong("gradeId");
+		Long classId=jsonObject.getLong("classId");
+		Map<String,Object> map =new HashMap<String,Object>();
+		map.put("areaId",areaId);
+		map.put("schoolId",schoolId);
+		map.put("gradeId",gradeId);
+		map.put("classId",classId);
+		HashMap<String,Object> schoolInfo=appUpdateService.querySchool(map);
+		jsonObject.put("page","1");
+		jsonObject.put("limit","10000");
+		Query query = new Query(jsonObject);
         query.isPaging(true);
 		List<HashMap<String,Object>> appUpdateList = appUpdateService.queryList(query);
+		schoolInfo.put("students",appUpdateList);
 		PageUtils pageUtil = new PageUtils(appUpdateList, query.getTotle(), query.getLimit(), query.getPage());
-        return AppBaseResult.success().setEncryptData(pageUtil);
+		schoolInfo.put("total",pageUtil.getTotalCount());
+        return AppBaseResult.success().setEncryptData(schoolInfo);
 	}
 	/**
 	 * 创建班级
@@ -80,10 +95,10 @@ public class AppGradeController extends AbstractController {
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		SysGradeEntity grade =new SysGradeEntity();
-		grade.setAreaId(Long.parseLong((String)jsonObject.get("areaId")));
-		grade.setSchoolId(Long.parseLong((String)jsonObject.get("schoolId")));
-		grade.setGradeId(Long.parseLong((String)jsonObject.get("gradeId")));
-		grade.setClassId(Long.parseLong((String)jsonObject.get("classId")));
+		grade.setAreaId(jsonObject.getLong("areaId"));
+		grade.setSchoolId(jsonObject.getLong("schoolId"));
+		grade.setGradeId(jsonObject.getLong("gradeId"));
+		grade.setClassId(jsonObject.getLong("classId"));
 		sysGradeService.save(grade);
 		return AppBaseResult.success();
 	}

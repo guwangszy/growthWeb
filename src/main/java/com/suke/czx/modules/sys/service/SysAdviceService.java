@@ -43,4 +43,13 @@ public interface SysAdviceService {
 	 */
 	public SysAdviceEntity queryObject(Long id);
 
+	/**
+	 * 获取发布List列表
+	 */
+	public List<Map<String, Object>> queryCycleList(Map<String, Object> map);
+
+	/**
+	 * 获取评论List列表
+	 */
+	public List<Map<String, Object>> queryCommentList(Long id);
 }

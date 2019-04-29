@@ -17,6 +17,16 @@ public class SysIssueEntity {
 	private String doneContent;
 	private Date createTime;
 
+	private Long gradeId;
+
+	public Long getGradeId() {
+		return gradeId;
+	}
+
+	public void setGradeId(Long gradeId) {
+		this.gradeId = gradeId;
+	}
+
 	public Long getId() {
 		return id;
 	}

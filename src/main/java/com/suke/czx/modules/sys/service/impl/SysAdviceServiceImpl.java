@@ -43,6 +43,13 @@ public class SysAdviceServiceImpl implements SysAdviceService {
 	public SysAdviceEntity queryObject(Long id) {
 		return sysAdviceDao.queryObject(id);
 	}
+	@Override
+	public List<Map<String, Object>> queryCycleList(Map<String, Object> map) {
+		return sysAdviceDao.queryCycleList(map);
+	}
 
-
+	@Override
+	public List<Map<String, Object>> queryCommentList(Long id) {
+		return sysAdviceDao.queryCommentList(id);
+	}
 }

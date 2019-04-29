@@ -11,4 +11,9 @@ public class ConfigConstant {
      * 云存储配置KEY
      */
     public final static String CLOUD_STORAGE_CONFIG_KEY = "CLOUD_STORAGE_CONFIG_KEY";
+
+    /**
+     * 上传图片路径
+     */
+    public final static String FILE_BASE_PATH = "D:\\upfile\\transferFile\\";
 }

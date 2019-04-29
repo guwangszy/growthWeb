@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">    
+<mapper namespace="com.suke.czx.modules.sys.dao.SysGrowUpDao">
+
+
+	
+	<insert id="save" parameterType="java.util.Map">
+		INSERT INTO sys_grow_up  VALUES (#{id} #{studentId}, #{accessoryType}, #{conent}, NOW(),#{gradeId})
+	</insert>
+	<insert id="saveFile" parameterType="java.util.Map">
+		INSERT INTO sys_accessory VALUES (#{accessoryName}, #{accessorySuffix}, #{accessoryAddress}, #{fk_id})
+	</insert>
+	<select id="queryList" parameterType="map" resultType="com.suke.czx.modules.sys.entity.SysGradeEntity">
+		SELECT
+		g.id,
+		g.student_id,
+		g.conent,
+		g.grade_id,
+		f.accessory_address,
+		f.accessory_name,
+		f.fk_id,
+		f.accessory_suffix
+		FROM
+		sys_grow_up g
+		LEFT JOIN (
+		SELECT
+		a.accessory_name,
+		a.accessory_address,
+		a.accessory_suffix,
+		a.fk_id
+		FROM
+		sys_accessory a
+		GROUP BY
+		a.fk_id
+		LIMIT 1
+		) f ON g.id = f.fk_id
+		WHERE 1=1
+		<if test="gradeId != null and gradeId.trim() != ''">
+			and  g.grade_id =#{gradeId}
+		</if>
+		<if test="studentId != null and studentId.trim() != ''">
+			and  g.student_id =#{studentId}
+		</if>
+	</select>
+</mapper>

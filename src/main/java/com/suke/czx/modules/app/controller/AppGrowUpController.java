@@ -2,14 +2,13 @@ package com.suke.czx.modules.app.controller;
 
 
 import com.google.gson.Gson;
-import com.suke.czx.common.utils.AppBaseResult;
-import com.suke.czx.common.utils.BASE64DecodedMultipartFile;
-import com.suke.czx.common.utils.PageUtils;
-import com.suke.czx.common.utils.Query;
+import com.suke.czx.common.utils.*;
 import com.suke.czx.common.validator.Assert;
 import com.suke.czx.modules.sys.controller.AbstractController;
 import com.suke.czx.modules.sys.entity.SysAdviceEntity;
+import com.suke.czx.modules.sys.entity.SysUserEntity;
 import com.suke.czx.modules.sys.service.SysGrowUpService;
+import com.suke.czx.modules.user.entity.UserEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,10 +21,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -33,7 +38,7 @@ import java.util.Map;
 @Api(value = "API - AppGradeController ", description = "APP版本管理")
 @RestController
 @RequestMapping("/app")
-public class AppGrowUpController {
+public class AppGrowUpController extends AbstractController{
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -72,11 +77,15 @@ public class AppGrowUpController {
         JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
         String fileCode =jsonObject.getString("fileCode");
         String fileName =jsonObject.getString("fileName");
+        String uuid = UUID.randomUUID().toString();
+        jsonObject.put("id",uuid);
+        MultipartFile multipartFile =null;
         if(StringUtils.isNotEmpty(fileCode)&&StringUtils.isNotEmpty(fileName)) {
-            //BASE64DecodedMultipartFile.base64ToMultipart();
-
+            multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(fileCode);
         }
         sysGrowUpService.save(jsonObject);
+        SysUserEntity user=getUser();
+        sysGrowUpService.saveFile(multipartFile,user.getUsername(),uuid);
         return AppBaseResult.success();
     }
 

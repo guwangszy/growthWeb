@@ -2,7 +2,6 @@ package com.suke.czx.modules.sys.service.impl;
 
 import com.suke.czx.common.utils.ConfigConstant;
 import com.suke.czx.modules.sys.dao.SysGrowUpDao;
-import com.suke.czx.modules.sys.entity.SysLogEntity;
 import com.suke.czx.modules.sys.service.SysGrowUpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service("SysGrowUpServiceImpl")
 public class SysGrowUpServiceImpl implements SysGrowUpService{
@@ -33,8 +31,8 @@ public class SysGrowUpServiceImpl implements SysGrowUpService{
     public void saveFile(MultipartFile multipartFile, String userName,String uuid){
         try {
             if(multipartFile!=null){
-                String filename=multipartFile.getName();
-                String suffix =filename.substring(filename.lastIndexOf("."));
+                String filename=multipartFile.getOriginalFilename();
+                String suffix =filename.substring(filename.lastIndexOf(".")+1);
                 File files=new File(ConfigConstant.FILE_BASE_PATH);
                 if(!files.exists()){
                     files.mkdirs();

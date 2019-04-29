@@ -3,16 +3,16 @@ package com.suke.czx.modules.oss.controller;
 import com.google.gson.Gson;
 import com.suke.czx.common.exception.RRException;
 import com.suke.czx.common.utils.*;
-import com.suke.czx.common.validator.group.AliyunGroup;
-import com.suke.czx.common.utils.*;
 import com.suke.czx.common.validator.ValidatorUtils;
+import com.suke.czx.common.validator.group.AliyunGroup;
 import com.suke.czx.common.validator.group.QcloudGroup;
 import com.suke.czx.common.validator.group.QiniuGroup;
 import com.suke.czx.modules.oss.cloud.CloudStorageConfig;
-import com.suke.czx.modules.oss.cloud.OSSFactory;
-import com.suke.czx.modules.oss.entity.SysOssEntity;
+import com.suke.czx.modules.oss.entity.SysAccessoryEntity;
 import com.suke.czx.modules.oss.service.SysOssService;
+import com.suke.czx.modules.sys.controller.AbstractController;
 import com.suke.czx.modules.sys.service.SysConfigService;
+import com.suke.czx.modules.sys.service.SysGrowUpService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +35,11 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("sys/oss")
-public class SysOssController {
+public class SysOssController extends AbstractController {
 	@Autowired
 	private SysOssService sysOssService;
+	@Autowired
+	private SysGrowUpService sysGrowUpService;
     @Autowired
     private SysConfigService sysConfigService;
 
@@ -51,10 +53,10 @@ public class SysOssController {
 	public R list(@RequestParam Map<String, Object> params){
 		//查询列表数据
 		Query query = new Query(params);
-		List<SysOssEntity> sysOssList = sysOssService.queryList(query);
-		int total = sysOssService.queryTotal(query);
+		List<SysAccessoryEntity> sysAccList = sysOssService.queryAccList(query);
+		int total = sysOssService.queryAccTotal(query);
 		
-		PageUtils pageUtil = new PageUtils(sysOssList, total, query.getLimit(), query.getPage());
+		PageUtils pageUtil = new PageUtils(sysAccList, total, query.getLimit(), query.getPage());
 		
 		return R.ok().put("page", pageUtil);
 	}
@@ -108,7 +110,8 @@ public class SysOssController {
 		if (file.isEmpty()) {
 			throw new RRException("上传文件不能为空");
 		}
-
+		sysGrowUpService.saveFile(file,getUser().getUsername(),"");
+	/*	//getUser().getUsername();
 		//上传文件
 		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 		String url = OSSFactory.build().uploadSuffix(file.getBytes(), suffix);
@@ -118,8 +121,8 @@ public class SysOssController {
 		ossEntity.setUrl(url);
 		ossEntity.setCreateDate(new Date());
 		sysOssService.save(ossEntity);
-
-		return R.ok().put("url", url);
+*/
+		return R.ok();
 	}
 
 
@@ -128,8 +131,13 @@ public class SysOssController {
 	 */
 	@RequestMapping("/delete")
 	@RequiresPermissions("sys:oss:all")
-	public R delete(@RequestBody Long[] ids){
-		sysOssService.deleteBatch(ids);
+	public R delete(@RequestBody long id){
+		SysAccessoryEntity sysAcc=sysOssService.queryAccObject(id);
+		File file=new File(sysAcc.getAccessoryAddress());
+		if(file.exists()){
+			file.delete();
+		}
+		sysOssService.delete(id);
 
 		return R.ok();
 	}

@@ -1,5 +1,6 @@
 package com.suke.czx.modules.oss.service;
 
+import com.suke.czx.modules.oss.entity.SysAccessoryEntity;
 import com.suke.czx.modules.oss.entity.SysOssEntity;
 
 import java.util.List;
@@ -27,4 +28,12 @@ public interface SysOssService {
 	void delete(Long id);
 	
 	void deleteBatch(Long[] ids);
+
+	void saveAcc(SysAccessoryEntity sysacc);
+
+	List<SysAccessoryEntity> queryAccList(Map<String, Object> map);
+
+	int queryAccTotal(Map<String, Object> map);
+
+	SysAccessoryEntity queryAccObject(Long id);
 }

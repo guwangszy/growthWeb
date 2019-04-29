@@ -1,14 +1,14 @@
 package com.suke.czx.modules.oss.service.impl;
 
+import com.suke.czx.modules.oss.dao.SysOssDao;
+import com.suke.czx.modules.oss.entity.SysAccessoryEntity;
+import com.suke.czx.modules.oss.entity.SysOssEntity;
+import com.suke.czx.modules.oss.service.SysOssService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import com.suke.czx.modules.oss.dao.SysOssDao;
-import com.suke.czx.modules.oss.entity.SysOssEntity;
-import com.suke.czx.modules.oss.service.SysOssService;
 
 
 
@@ -51,5 +51,24 @@ public class SysOssServiceImpl implements SysOssService {
 	public void deleteBatch(Long[] ids){
 		sysOssDao.deleteBatch(ids);
 	}
-	
+
+	@Override
+	public void saveAcc(SysAccessoryEntity sysacc){
+		sysOssDao.saveAcc(sysacc);
+	}
+
+	@Override
+	public List<SysAccessoryEntity> queryAccList(Map<String, Object> map){
+		return sysOssDao.queryAccList(map);
+	}
+
+	@Override
+	public int queryAccTotal(Map<String, Object> map){
+		return sysOssDao.queryAccTotal(map);
+	}
+
+	@Override
+	public SysAccessoryEntity queryAccObject(Long id){
+		return sysOssDao.queryAccObject(id);
+	}
 }

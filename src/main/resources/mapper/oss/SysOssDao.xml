@@ -4,30 +4,40 @@
 <mapper namespace="com.suke.czx.modules.oss.dao.SysOssDao">
 
 	<select id="queryObject" resultType="com.suke.czx.modules.oss.entity.SysOssEntity">
-		select * from sys_oss where id = #{value}
+		select * from sys_accessory where id = #{value}
 	</select>
 
-	<select id="queryList" resultType="com.suke.czx.modules.oss.entity.SysOssEntity">
-		select * from sys_oss order by id desc
+	<select id="queryAccObject" resultType="com.suke.czx.modules.oss.entity.SysAccessoryEntity">
+		select * from sys_accessory where id = #{value}
+	</select>
+
+	<select id="queryAccList" resultType="com.suke.czx.modules.oss.entity.SysAccessoryEntity">
+		select * from sys_accessory order by id desc
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
 		</if>
 	</select>
 	
- 	<select id="queryTotal" resultType="int">
-		select count(*) from sys_oss 
+ 	<select id="queryAccTotal" resultType="int">
+		select count(*) from sys_accessory
 	</select>
 	 
-	<insert id="save" parameterType="com.suke.czx.modules.oss.entity.SysOssEntity" useGeneratedKeys="true" keyProperty="id">
-		insert into sys_oss
+	<insert id="saveAcc" parameterType="com.suke.czx.modules.oss.entity.SysAccessoryEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_accessory
 		(
-			`url`, 
-			`create_date`
+			`accessory_name`,
+			`accessory_suffix`,
+			accessory_address,
+			create_user,
+			create_time
 		)
 		values
 		(
-			#{url}, 
-			#{createDate}
+			#{accessoryName},
+			#{accessorySuffix},
+			#{accessoryAddress},
+			#{createUser},
+			#{now(）}
 		)
 	</insert>
 	 
@@ -41,7 +51,7 @@
 	</update>
 	
 	<delete id="delete">
-		delete from sys_oss where id = #{value}
+		delete from sys_accessory where id = #{value}
 	</delete>
 	
 	<delete id="deleteBatch">

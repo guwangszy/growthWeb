@@ -4,8 +4,11 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', width: 20, key: true },
-            { label: 'URL地址', name: 'url', width: 160 },
-			{ label: '创建时间', name: 'createDate', width: 40 }
+            { label: '文件名称', name: 'accessoryName', width: 160 },
+            { label: '文件后缀', name: 'accessorySuffix', width: 160 },
+            { label: '文件地址', name: 'accessoryAddress', width: 160 },
+            { label: '创建人', name: 'createUser', width: 100 },
+			{ label: '创建时间', name: 'createTime', width: 100 }
         ],
 		viewrecords: true,
         height: 385,
@@ -39,12 +42,12 @@ $(function () {
         autoSubmit:true,
         responseType:"json",
         onSubmit:function(file, extension){
-            if(vm.config.type == null){
+           /* if(vm.config.type == null){
                 alert("云存储配置未配置");
                 return false;
-            }
-            if (!(extension && /^(jpg|jpeg|png|gif)$/.test(extension.toLowerCase()))){
-                alert('只支持jpg、png、gif格式的图片！');
+            }*/
+            if (!(extension && /^(txt)$/.test(extension.toLowerCase()))){
+                alert('只支持txt格式的文件！');
                 return false;
             }
         },
@@ -102,8 +105,8 @@ var vm = new Vue({
 			});
 		},
         del: function () {
-            var ossIds = getSelectedRows();
-            if(ossIds == null){
+            var ossId = getSelectedRow();
+            if(ossId == null){
                 return ;
             }
 
@@ -112,7 +115,7 @@ var vm = new Vue({
                     type: "POST",
                     url: baseURL + "sys/oss/delete",
                     contentType: "application/json",
-                    data: JSON.stringify(ossIds),
+                    data: JSON.stringify(ossId),
                     success: function(r){
                         if(r.code === 0){
                             alert('操作成功', function(){

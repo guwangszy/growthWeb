@@ -71,4 +71,9 @@ public class SysOssServiceImpl implements SysOssService {
 	public SysAccessoryEntity queryAccObject(Long id){
 		return sysOssDao.queryAccObject(id);
 	}
+
+	@Override
+	public SysAccessoryEntity queryAccDetil(String accessoryAddress){
+		return sysOssDao.queryAccDetil(accessoryAddress);
+	}
 }

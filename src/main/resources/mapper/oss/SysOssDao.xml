@@ -11,6 +11,10 @@
 		select * from sys_accessory where id = #{value}
 	</select>
 
+	<select id="queryAccDetil" resultType="com.suke.czx.modules.oss.entity.SysAccessoryEntity">
+		select * from sys_accessory where accessory_address = #{accessoryAddress}
+	</select>
+
 	<select id="queryAccList" resultType="com.suke.czx.modules.oss.entity.SysAccessoryEntity">
 		select * from sys_accessory order by id desc
 		<if test="offset != null and limit != null">

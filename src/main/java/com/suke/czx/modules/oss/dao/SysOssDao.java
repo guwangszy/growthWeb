@@ -26,4 +26,6 @@ public interface SysOssDao extends BaseDao<SysOssEntity> {
 
     SysAccessoryEntity queryAccObject(Long id);
 
+    SysAccessoryEntity queryAccDetil(String accessoryAddress);
+
 }

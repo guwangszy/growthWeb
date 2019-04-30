@@ -53,7 +53,7 @@ $(function () {
         },
         onComplete : function(file, r){
             if(r.code == 0){
-                alert(r.url);
+                alert('操作成功');
                 vm.reload();
             }else{
                 alert(r.msg);

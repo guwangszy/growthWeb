@@ -36,4 +36,6 @@ public interface SysOssService {
 	int queryAccTotal(Map<String, Object> map);
 
 	SysAccessoryEntity queryAccObject(Long id);
+
+	SysAccessoryEntity queryAccDetil(String accessoryAddress);
 }

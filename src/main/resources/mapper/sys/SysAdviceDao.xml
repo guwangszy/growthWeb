@@ -39,13 +39,13 @@
 		si.id,
 		sa.title,
 		sa.content,
-		sb.num,
+		(case when sb.num is NULL THEN 0 else sb.num END) num,
 		si.done_content doneContent
 		from
 		sys_issue si
 		LEFT JOIN sys_advice sa on sa.id=si.advice_id
 		LEFT JOIN sys_comment sc on sc.id=si.id
-		LEFT JOIN (select count(type) num,issue_id from sys_comment where type=1 GROUP BY issue_id) sb on sb.issue_id=si.id
+		LEFT JOIN (select count(type) num,issue_id from sys_comment where type=1 and user_id=#{userId} GROUP BY issue_id) sb on sb.issue_id=si.id
 		where si.grade_id=#{gradeId}
 		GROUP BY si.create_time desc
 	</select>

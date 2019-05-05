@@ -91,9 +91,10 @@ public class AppAccController extends AbstractController {
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		String accessoryAddress=String.valueOf(jsonObject.get("accessoryAddress"));
-		SysAccessoryEntity sysAcc=sysOssService.queryAccDetil(accessoryAddress);
+		String address="D:\\upfile\\transferFile\\"+accessoryAddress;
+		SysAccessoryEntity sysAcc=sysOssService.queryAccDetil(address);
 		JSONObject json=JSONObject.fromObject(sysAcc);
-		String content=Tools.readTxtFile(accessoryAddress);
+		String content=Tools.readTxtFile(address);
 		json.put("content",content);
 		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
 		json.put("createTime",sdf.format(sysAcc.getCreateTime()));

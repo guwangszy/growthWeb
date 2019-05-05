@@ -219,26 +219,20 @@ public class Tools {
 	 *
 	 *            文件路径
 	 */
-	public static String readTxtFile(String fileP) {
+	public static String readTxtFile(String filePath) {
 		try {
-
-			String filePath = String.valueOf(Thread.currentThread().getContextClassLoader().getResource("")) + "../../"; // 项目路径
-			filePath = filePath.replaceAll("file:/", "");
-			filePath = filePath.replaceAll("%20", " ");
-			filePath = filePath.trim() + fileP.trim();
-			if (filePath.indexOf(":") != 1) {
-				filePath = File.separator + filePath;
-			}
-			String encoding = "utf-8";
+			String encoding = "GBK";
 			File file = new File(filePath);
 			if (file.isFile() && file.exists()) { // 判断文件是否存在
 				InputStreamReader read = new InputStreamReader(new FileInputStream(file), encoding); // 考虑到编码格式
 				BufferedReader bufferedReader = new BufferedReader(read);
 				String lineTxt = null;
+				String lin ="";
 				while ((lineTxt = bufferedReader.readLine()) != null) {
-					return lineTxt;
+					lin+=lineTxt;
 				}
 				read.close();
+				return lin;
 			} else {
 				System.out.println("找不到指定的文件,查看此路径是否正确:" + filePath);
 			}
@@ -247,7 +241,7 @@ public class Tools {
 		}
 		return "";
 	}
-	
+
 	
 	 public static String appMd5(File file) {
 	        MessageDigest digest = null;

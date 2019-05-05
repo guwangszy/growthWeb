@@ -78,16 +78,16 @@ public class AppAdviceController extends AbstractController {
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		SysAdviceEntity advice =new SysAdviceEntity();
-		advice.setTitle((String)jsonObject.get("title"));
-		advice.setContent((String)jsonObject.get("content"));
+		advice.setTitle(jsonObject.getString("title"));
+		advice.setContent(jsonObject.getString("content"));
 		advice.setFrequency(jsonObject.getLong("frequency"));
 		advice.setGradeId(jsonObject.getLong("gradeId"));
-		int cycle=Integer.parseInt((String)jsonObject.get("cycle"));
+		int cycle=jsonObject.getInt("cycle");
 		//获取结束时间
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, cycle);
 		advice.setEndTime(calendar.getTime());
-		advice.setCreateUser((String)jsonObject.get("createUser"));
+		advice.setCreateUser(jsonObject.getString("createUser"));
 		sysAdviceService.save(advice);
 		return AppBaseResult.success();
 	}
@@ -102,10 +102,12 @@ public class AppAdviceController extends AbstractController {
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		SysIssueEntity issue =new SysIssueEntity();
-		issue.setAdviceId(Long.parseLong((String)jsonObject.get("adviceId")));
-		issue.setUserId(Long.parseLong((String)jsonObject.get("userId")));
+		issue.setAdviceId(jsonObject.getLong("adviceId"));
+		issue.setUserId(jsonObject.getLong("userId"));
 		issue.setGradeId(jsonObject.getLong("gradeId"));
-		issue.setDoneContent((String)jsonObject.get("doneContent"));
+		if(jsonObject.containsKey("doneContent")){
+			issue.setDoneContent(jsonObject.getString("doneContent"));
+		}
 		sysAdviceService.saveIssue(issue);
 		return AppBaseResult.success();
 	}
@@ -120,10 +122,12 @@ public class AppAdviceController extends AbstractController {
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		SysCommentEntity comment =new SysCommentEntity();
-		comment.setIssueId(Long.parseLong((String)jsonObject.get("issueId")));
-		comment.setType(Long.parseLong((String)jsonObject.get("type")));
-		comment.setUserId(Long.parseLong((String)jsonObject.get("userId")));
-		comment.setCommentContent((String)jsonObject.get("commentContent"));
+		comment.setIssueId(jsonObject.getLong("issueId"));
+		comment.setType(jsonObject.getLong("type"));
+		comment.setUserId(jsonObject.getLong("userId"));
+		if(jsonObject.containsKey("commentContent")){
+			comment.setCommentContent(jsonObject.getString("commentContent"));
+		}
 		sysAdviceService.saveComment(comment);
 		return AppBaseResult.success();
 	}
@@ -167,10 +171,11 @@ public class AppAdviceController extends AbstractController {
 		map.put("commentList",commentList);
 		}
 		PageUtils pageUtil = new PageUtils(cycleList, query.getTotle(), query.getLimit(), query.getPage());
-		Map<String,Object> list=new HashMap<String,Object>();
-		list.put("cycleList",cycleList);
-		list.put("total",pageUtil.getTotalCount());
-		return AppBaseResult.success().setEncryptData(list);
+//		Map<String,Object> list=new HashMap<String,Object>();
+//		list.put("cycleList",cycleList);
+//		list.put("total",pageUtil.getTotalCount());
+//		list.put("page",pageUtil.getCurrPage());
+		return AppBaseResult.success().setEncryptData(pageUtil);
 	}
 /*	public static  void  main(String []args){
 		Calendar calendar = Calendar.getInstance();

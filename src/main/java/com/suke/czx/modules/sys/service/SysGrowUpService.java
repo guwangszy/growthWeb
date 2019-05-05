@@ -15,7 +15,7 @@ public interface SysGrowUpService {
     /**
      * 保存文件
      */
-    void saveFile(MultipartFile multipartFile, String username, String uuid);
+    void saveFile(MultipartFile multipartFile,String filename, String username, String uuid);
 
     List<Map<String,Object>> queryList(Map<String,Object> map);
 }

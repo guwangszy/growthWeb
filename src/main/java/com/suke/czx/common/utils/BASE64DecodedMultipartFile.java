@@ -64,7 +64,11 @@ public class BASE64DecodedMultipartFile implements MultipartFile {
 
             BASE64Decoder decoder = new BASE64Decoder();
             byte[] b = new byte[0];
-            b = decoder.decodeBuffer(baseStrs[1]);
+            if(baseStrs.length>1){
+                b = decoder.decodeBuffer(baseStrs[1]);
+            }else{
+                b = decoder.decodeBuffer(baseStrs[0]);
+            }
 
             for(int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {

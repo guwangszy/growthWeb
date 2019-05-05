@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -75,17 +76,25 @@ public class AppGrowUpController extends AbstractController{
     public AppBaseResult save(@RequestBody AppBaseResult appBaseResult)throws Exception{
         HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
         JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
-        String fileCode =jsonObject.getString("fileCode");
-        String fileName =jsonObject.getString("fileName");
-        String uuid = UUID.randomUUID().toString();
-        jsonObject.put("id",uuid);
         MultipartFile multipartFile =null;
-        if(StringUtils.isNotEmpty(fileCode)&&StringUtils.isNotEmpty(fileName)) {
-            multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(fileCode);
+        String uuid = UUID.randomUUID().toString();
+        if(jsonObject!=null&&jsonObject.containsKey("file")){
+            JSONArray jsonArray=jsonObject.getJSONArray("file");
+            String username =jsonObject.getString("username");
+            if(jsonArray!=null){
+                for (Object files:jsonArray) {
+                    JSONObject file=(JSONObject) files;
+                    String fileCode =file.getString("fileCode");
+                    String fileName =file.getString("fileName");
+                    if(StringUtils.isNotEmpty(fileCode)&&StringUtils.isNotEmpty(fileName)) {
+                        multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(fileCode);
+                        sysGrowUpService.saveFile(multipartFile,fileName,username,uuid);
+                    }
+                }
+            }
         }
+        jsonObject.put("id",uuid);
         sysGrowUpService.save(jsonObject);
-        SysUserEntity user=getUser();
-        sysGrowUpService.saveFile(multipartFile,user.getUsername(),uuid);
         return AppBaseResult.success();
     }
 

@@ -28,10 +28,10 @@ public class SysGrowUpServiceImpl implements SysGrowUpService{
     /**
      * 保存成长册信息
      */
-    public void saveFile(MultipartFile multipartFile, String userName,String uuid){
+    public void saveFile(MultipartFile multipartFile,String filename, String userName,String uuid){
         try {
             if(multipartFile!=null){
-                String filename=multipartFile.getOriginalFilename();
+                //String filename=;
                 String suffix =filename.substring(filename.lastIndexOf(".")+1);
                 File files=new File(ConfigConstant.FILE_BASE_PATH);
                 if(!files.exists()){

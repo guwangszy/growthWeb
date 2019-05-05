@@ -110,7 +110,7 @@ public class SysOssController extends AbstractController {
 		if (file.isEmpty()) {
 			throw new RRException("上传文件不能为空");
 		}
-		sysGrowUpService.saveFile(file,getUser().getUsername(),"");
+		sysGrowUpService.saveFile(file,file.getOriginalFilename(),getUser().getUsername(),"");
 	/*	//getUser().getUsername();
 		//上传文件
 		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));

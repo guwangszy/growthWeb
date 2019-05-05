@@ -5,17 +5,19 @@
 
 	
 	<insert id="save" parameterType="java.util.Map">
-		INSERT INTO sys_grow_up  VALUES (#{id} #{studentId}, #{accessoryType}, #{conent}, NOW(),#{gradeId})
+		INSERT INTO sys_grow_up (`id`, `student_id`, `accessory_type`, `conent`, `growup_time`, `grade_id`) VALUES (#{id}, #{studentId}, #{accessoryType}, #{conent}, NOW(),#{gradeId})
 	</insert>
 	<insert id="saveFile" parameterType="java.util.Map">
 		INSERT INTO sys_accessory ( `accessory_name`, `accessory_suffix`, `accessory_address`, `fk_id`, `create_user`, `create_time`) VALUES (#{accessoryName}, #{accessorySuffix}, #{accessoryAddress}, #{id},#{createUser},now())
 	</insert>
-	<select id="queryList" parameterType="map" resultType="com.suke.czx.modules.sys.entity.SysGradeEntity">
+	<select id="queryList" parameterType="map" resultType="java.util.Map">
 		SELECT
 		g.id,
 		g.student_id,
 		g.conent,
 		g.grade_id,
+		u.username,
+		DATE_FORMAT(g.growup_time,'%Y-%m-%d %H:%i:%S') growup_time,
 		f.accessory_address,
 		f.accessory_name,
 		f.fk_id,
@@ -32,10 +34,11 @@
 		sys_accessory a
 		GROUP BY
 		a.fk_id
-		LIMIT 1
 		) f ON g.id = f.fk_id
+		LEFT JOIN sys_user u
+		on u.user_id=g.student_id
 		WHERE 1=1
-		<if test="gradeId != null and gradeId.trim() != ''">
+		<if test="gradeId != null and gradeId != ''">
 			and  g.grade_id =#{gradeId}
 		</if>
 		<if test="studentId != null and studentId.trim() != ''">

@@ -15,8 +15,8 @@
 		select * from sys_accessory where accessory_address = #{accessoryAddress}
 	</select>
 
-	<select id="queryAccList" resultType="com.suke.czx.modules.oss.entity.SysAccessoryEntity">
-		select * from sys_accessory order by id desc
+	<select id="queryAccList" resultType="java.util.Map">
+		select id,accessory_name,accessory_suffix,accessory_address,fk_id,create_user,DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time from sys_accessory where accessory_suffix='txt ' order by id desc
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
 		</if>

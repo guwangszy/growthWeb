@@ -31,7 +31,7 @@ public interface SysOssService {
 
 	void saveAcc(SysAccessoryEntity sysacc);
 
-	List<SysAccessoryEntity> queryAccList(Map<String, Object> map);
+	List<Map<String, Object>> queryAccList(Map<String, Object> map);
 
 	int queryAccTotal(Map<String, Object> map);
 

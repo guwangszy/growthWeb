@@ -28,8 +28,9 @@
 	</insert>
 	<!--获取通知表信息-->
 	<select id="queryList" parameterType="java.util.Map" resultType="com.suke.czx.modules.sys.entity.SysAdviceEntity">
-		select * from sys_advice where grade_id=#{gradeId}
-		and ( frequency is NULL or <![CDATA[ ( start_time <= now()  and end_time >= now() and frequency = DAYOFWEEK(now()) ) ]]> )
+		select * from sys_advice s where s.grade_id=#{gradeId}
+		and ( s.frequency is NULL or <![CDATA[ ( s.start_time <= now()  and s.end_time >= now() and frequency = DAYOFWEEK(now()) ) ]]> )
+		and s.id not in  (select advice_id from sys_issue where DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d') AND user_id=#{userId})
 		 ORDER BY create_time DESC
 	</select>
 

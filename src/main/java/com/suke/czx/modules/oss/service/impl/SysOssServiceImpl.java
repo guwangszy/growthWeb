@@ -58,7 +58,7 @@ public class SysOssServiceImpl implements SysOssService {
 	}
 
 	@Override
-	public List<SysAccessoryEntity> queryAccList(Map<String, Object> map){
+	public List<Map<String, Object>> queryAccList(Map<String, Object> map){
 		return sysOssDao.queryAccList(map);
 	}
 

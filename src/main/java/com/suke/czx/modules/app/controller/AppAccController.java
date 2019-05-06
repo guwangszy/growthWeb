@@ -28,6 +28,7 @@ import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -72,12 +73,12 @@ public class AppAccController extends AbstractController {
 		params.put("page","1");
 		params.put("limit","10000");
 		Query query = new Query(params);
-		List<SysAccessoryEntity> sysAccList = sysOssService.queryAccList(query);
+		List<Map<String, Object>> sysAccList = sysOssService.queryAccList(query);
 		int total = sysOssService.queryAccTotal(query);
 		PageUtils pageUtil = new PageUtils(sysAccList, total, query.getLimit(), query.getPage());
-		data.put("sysAccList",sysAccList);
-		data.put("total",pageUtil.getTotalCount());
-        return AppBaseResult.success().setEncryptData(data);
+		/*data.put("sysAccList",sysAccList);
+		data.put("total",pageUtil.getTotalCount());*/
+        return AppBaseResult.success().setEncryptData(pageUtil);
 	}
 
 

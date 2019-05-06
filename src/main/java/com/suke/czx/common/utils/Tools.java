@@ -229,7 +229,7 @@ public class Tools {
 				String lineTxt = null;
 				String lin ="";
 				while ((lineTxt = bufferedReader.readLine()) != null) {
-					lin+=lineTxt;
+					lin+=lineTxt+"\n";
 				}
 				read.close();
 				return lin;

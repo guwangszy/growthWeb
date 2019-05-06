@@ -53,7 +53,7 @@ public class SysOssController extends AbstractController {
 	public R list(@RequestParam Map<String, Object> params){
 		//查询列表数据
 		Query query = new Query(params);
-		List<SysAccessoryEntity> sysAccList = sysOssService.queryAccList(query);
+		List<Map<String, Object>> sysAccList = sysOssService.queryAccList(query);
 		int total = sysOssService.queryAccTotal(query);
 		
 		PageUtils pageUtil = new PageUtils(sysAccList, total, query.getLimit(), query.getPage());

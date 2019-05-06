@@ -4,11 +4,11 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', width: 20, key: true },
-            { label: '文件名称', name: 'accessoryName', width: 160 },
-            { label: '文件后缀', name: 'accessorySuffix', width: 160 },
-            { label: '文件地址', name: 'accessoryAddress', width: 160 },
-            { label: '创建人', name: 'createUser', width: 100 },
-			{ label: '创建时间', name: 'createTime', width: 100 }
+            { label: '文件名称', name: 'accessory_name', width: 160 },
+            { label: '文件后缀', name: 'accessory_suffix', width: 160 },
+            { label: '文件地址', name: 'accessory_address', width: 160 },
+            { label: '创建人', name: 'create_user', width: 100 },
+			{ label: '创建时间', name: 'create_time', width: 100 }
         ],
 		viewrecords: true,
         height: 385,

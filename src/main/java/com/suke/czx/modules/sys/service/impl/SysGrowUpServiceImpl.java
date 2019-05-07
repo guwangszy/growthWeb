@@ -56,4 +56,8 @@ public class SysGrowUpServiceImpl implements SysGrowUpService{
     public List<Map<String,Object>> queryList(Map<String, Object> map) {
         return (List)sysGrowUpDao.queryList(map);
     }
+    @Override
+    public List<Map<String,Object>> queryFileList(Map<String, Object> map) {
+        return (List)sysGrowUpDao.queryFileList(map);
+    }
 }

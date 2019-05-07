@@ -44,5 +44,18 @@
 		<if test="studentId != null and studentId.trim() != ''">
 			and  g.student_id =#{studentId}
 		</if>
+		order by g.growup_time desc
+	</select>
+
+	<select id="queryFileList" parameterType="map" resultType="java.util.Map">
+		SELECT
+		a.accessory_name,
+		a.accessory_address,
+		a.accessory_suffix,
+		a.fk_id
+		FROM
+		sys_accessory a
+		WHERE
+		a.fk_id = #{fkId}
 	</select>
 </mapper>

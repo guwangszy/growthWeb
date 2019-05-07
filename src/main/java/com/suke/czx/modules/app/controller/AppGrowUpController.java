@@ -66,9 +66,27 @@ public class AppGrowUpController extends AbstractController{
         PageUtils pageUtil = new PageUtils(growUpList, query.getTotle(), query.getLimit(), query.getPage());
         return AppBaseResult.success().setEncryptData(pageUtil);
     }
-
     /**
-     * 创建班级
+     * 文件列表
+     */
+    @ApiOperation(value="文件列表", notes="文件列表")
+    @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
+    @PostMapping("/growUp/fileList")
+    public AppBaseResult fileList(@RequestBody AppBaseResult appBaseResult)throws Exception{
+
+        HashMap<String,Object> params = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+        JSONObject jsonObject=JSONObject.fromObject(params.get("data"));
+        //查询列表数据
+        Query query = new Query(jsonObject);
+        query.isPaging(true);
+        List<Map<String,Object>> growUpList = sysGrowUpService.queryFileList(query);
+
+        /*List<HashMap<String,Object>> appUpdateList = appUpdateService.queryList(query);*/
+        PageUtils pageUtil = new PageUtils(growUpList, query.getTotle(), query.getLimit(), query.getPage());
+        return AppBaseResult.success().setEncryptData(pageUtil);
+    }
+    /**
+     * 新增成长册
      */
     @ApiOperation(value="新增成长册", notes="新增成长册")
     @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})

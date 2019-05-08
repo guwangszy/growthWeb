@@ -35,6 +35,11 @@ public class SysAdviceServiceImpl implements SysAdviceService {
 	}
 
 	@Override
+	public List<Map<String, Object>> queryAdviceList(Map<String, Object> map) {
+		return sysAdviceDao.queryAdviceList(map);
+	}
+
+	@Override
 	public int queryTotal(Map<String, Object> map) {
 		return sysAdviceDao.queryTotal(map);
 	}

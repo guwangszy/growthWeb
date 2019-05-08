@@ -27,11 +27,19 @@
 		values(#{issueId},#{type},#{userId},#{commentContent},now())
 	</insert>
 	<!--获取通知表信息-->
+	<select id="queryAdviceList" parameterType="java.util.Map" resultType="java.util.Map">
+		select * from sys_advice s where s.grade_id=#{gradeId}
+		and ( s.frequency is NULL or <![CDATA[ ( s.start_time <= now()  and s.end_time >= now() and frequency = DAYOFWEEK(now()) ) ]]> or s.frequency=0 )
+		and s.id not in  (select advice_id from sys_issue where DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d') AND user_id=#{userId})
+		 ORDER BY create_time DESC
+	</select>
+
+	<!--获取通知表信息-->
 	<select id="queryList" parameterType="java.util.Map" resultType="com.suke.czx.modules.sys.entity.SysAdviceEntity">
 		select * from sys_advice s where s.grade_id=#{gradeId}
 		and ( s.frequency is NULL or <![CDATA[ ( s.start_time <= now()  and s.end_time >= now() and frequency = DAYOFWEEK(now()) ) ]]> )
 		and s.id not in  (select advice_id from sys_issue where DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d') AND user_id=#{userId})
-		 ORDER BY create_time DESC
+		ORDER BY create_time DESC
 	</select>
 
 	<!--获取班级圈列表-->
@@ -40,11 +48,13 @@
 		si.id,
 		sa.title,
 		sa.content,
+		su.username,
 		(case when sb.num is NULL THEN 0 else sb.num END) num,
 		si.done_content doneContent
 		from
 		sys_issue si
 		LEFT JOIN sys_advice sa on sa.id=si.advice_id
+		LEFT JOIN sys_user su on su.user_id=si.user_id
 		LEFT JOIN sys_comment sc on sc.id=si.id
 		LEFT JOIN (select count(type) num,issue_id from sys_comment where type=1 and user_id=#{userId} GROUP BY issue_id) sb on sb.issue_id=si.id
 		where si.grade_id=#{gradeId}

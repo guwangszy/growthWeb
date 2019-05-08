@@ -52,4 +52,9 @@ public interface SysAdviceService {
 	 * 获取评论List列表
 	 */
 	public List<Map<String, Object>> queryCommentList(Long id);
+
+	/**
+	 * 获取通知List列表
+	 */
+	public List<Map<String, Object>> queryAdviceList(Map<String, Object> map);
 }

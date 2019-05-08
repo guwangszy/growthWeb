@@ -67,6 +67,7 @@ var vm = new Vue({
 			vm.reload();
 		},
 		add: function(){
+			alert("111111111")
 			vm.showList = false;
 			vm.title = "新增";
 			vm.roleList = {};
@@ -118,6 +119,7 @@ var vm = new Vue({
             }
 
 			var url = vm.user.userId == null ? "sys/user/save" : "sys/user/update";
+            console.log(JSON.stringify(vm.user));
 			$.ajax({
 				type: "POST",
 			    url: baseURL + url,
@@ -129,7 +131,7 @@ var vm = new Vue({
 							vm.reload();
 						});
 					}else{
-						alert(r.msg);
+						alert('新增失败');
 					}
 				}
 			});

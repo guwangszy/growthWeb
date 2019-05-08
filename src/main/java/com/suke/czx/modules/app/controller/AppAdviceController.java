@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,13 +58,16 @@ public class AppAdviceController extends AbstractController {
     @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
 	@PostMapping("/appAdvice/list")
 	public AppBaseResult list(@RequestBody AppBaseResult appBaseResult)throws Exception{
-        logger.info("AppAdviceController 列表",appBaseResult.decryptData());
         HashMap<String,Object> params = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(params.get("data"));
 		//查询列表数据
         Query query = new Query(jsonObject);
         query.isPaging(true);
-		List<SysAdviceEntity> appUpdateList = sysAdviceService.queryList(query);
+		List<Map<String, Object>> appUpdateList = sysAdviceService.queryAdviceList(query);
+		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		for(Map<String, Object> map :appUpdateList){
+			map.put("create_time",sdf.format(map.get("create_time")));
+		}
 		/*List<HashMap<String,Object>> appUpdateList = appUpdateService.queryList(query);*/
 		PageUtils pageUtil = new PageUtils(appUpdateList, query.getTotle(), query.getLimit(), query.getPage());
         return AppBaseResult.success().setEncryptData(pageUtil);
@@ -80,9 +84,14 @@ public class AppAdviceController extends AbstractController {
 		SysAdviceEntity advice =new SysAdviceEntity();
 		advice.setTitle(jsonObject.getString("title"));
 		advice.setContent(jsonObject.getString("content"));
-		advice.setFrequency(jsonObject.getLong("frequency"));
+		if(!StringUtils.isBlank(jsonObject.getString("frequency"))){
+			advice.setFrequency(jsonObject.getLong("frequency"));
+		}
+		int cycle=0;
+		if(!StringUtils.isBlank(jsonObject.getString("cycle"))){
+			cycle=jsonObject.getInt("cycle");
+		}
 		advice.setGradeId(jsonObject.getLong("gradeId"));
-		int cycle=jsonObject.getInt("cycle");
 		//获取结束时间
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, cycle);

@@ -62,6 +62,10 @@ public class SysUserEntity implements Serializable {
 	 * 角色ID列表
 	 */
 	private List<Long> roleIdList;
+	/**
+	 * 角色ID列表
+	 */
+	private List<Long> roleId;
 	
 	/**
 	 * 创建者ID

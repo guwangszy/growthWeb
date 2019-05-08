@@ -28,6 +28,7 @@ public class AppUserService extends ServiceSupport {
         String password = param.get("password").toString();
         HashMap<String,Object> user = findForObject("api.AppUserDao.queryByMobile", mobile);
         Assert.isNull(user, "用户不存在");
+        Assert.isNull(user.get("gradeClassId"), "请联系管理员，分配班级");
 
         //密码错误
        // String userpassword = DigestUtils.sha256Hex(password);

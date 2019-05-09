@@ -67,7 +67,6 @@ var vm = new Vue({
 			vm.reload();
 		},
 		add: function(){
-			alert("111111111")
 			vm.showList = false;
 			vm.title = "新增";
 			vm.roleList = {};

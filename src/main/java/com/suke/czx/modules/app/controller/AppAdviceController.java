@@ -167,7 +167,6 @@ public class AppAdviceController extends AbstractController {
 	@ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
 	@PostMapping("/appAdvice/gradeCycleList")
 	public AppBaseResult gradeCycleList(@RequestBody AppBaseResult appBaseResult)throws Exception{
-		logger.info("AppAdviceController 列表",appBaseResult.decryptData());
 		HashMap<String,Object> params = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(params.get("data"));
 		//查询列表数据

@@ -59,7 +59,7 @@ public class AppUpdateController extends AbstractController {
     @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
 	@PostMapping("/appUpdate/list")
 	public AppBaseResult list(@RequestBody AppBaseResult appBaseResult)throws Exception{
-        logger.info("AppUpdateController 列表",appBaseResult.decryptData());
+
         HashMap<String,Object> params = new Gson().fromJson(appBaseResult.decryptData(),HashMap.class);
 		//查询列表数据
         Query query = new Query(params);
@@ -77,7 +77,7 @@ public class AppUpdateController extends AbstractController {
     @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
 	@PostMapping("/appUpdate/info")
 	public AppBaseResult info(@RequestBody AppBaseResult appBaseResult)throws Exception{
-        logger.info("AppUpdateController 信息",appBaseResult.decryptData());
+
         HashMap<String,Object> params = new Gson().fromJson(appBaseResult.decryptData(),HashMap.class);
         HashMap<String,Object> data = appUpdateService.queryObject(params);
         return AppBaseResult.success().setEncryptData(data);
@@ -90,7 +90,7 @@ public class AppUpdateController extends AbstractController {
     @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
 	@PostMapping("/appUpdate/save")
 	public AppBaseResult save(@RequestBody AppBaseResult appBaseResult)throws Exception{
-        logger.info("AppUpdateController 保存",appBaseResult.decryptData());
+
         HashMap<String,Object> params = new Gson().fromJson(appBaseResult.decryptData(),HashMap.class);
 		appUpdateService.saveInfo(params);
         return AppBaseResult.success();
@@ -103,7 +103,7 @@ public class AppUpdateController extends AbstractController {
     @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
 	@PostMapping("/appUpdate/update")
 	public AppBaseResult update(@RequestBody AppBaseResult appBaseResult)throws Exception{
-		logger.info("AppUpdateController 修改",appBaseResult.decryptData());
+
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		Assert.isNull(jsonObject.get("mobile"), "手机号不能为空");
@@ -142,7 +142,7 @@ public class AppUpdateController extends AbstractController {
 	@ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
 	@PostMapping("/appUpdate/updatePassword")
 	public AppBaseResult updatePassword(@RequestBody AppBaseResult appBaseResult)throws Exception{
-		logger.info("AppUpdateController 修改密码",appBaseResult.decryptData());
+
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		String password=jsonObject.getString("password");
@@ -171,7 +171,7 @@ public class AppUpdateController extends AbstractController {
     @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
     @PostMapping("/appUpdate/logout")
     public AppBaseResult logout(@RequestBody AppBaseResult appBaseResult)throws Exception{
-        logger.info("AppUpdateController 退出登录",appBaseResult.decryptData());
+
         HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
         JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
         Long userId=jsonObject.getLong("userid");
@@ -189,7 +189,7 @@ public class AppUpdateController extends AbstractController {
     @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
 	@PostMapping("/appUpdate/delete")
 	public AppBaseResult delete(@RequestBody AppBaseResult appBaseResult)throws Exception{
-        logger.info("AppUpdateController 修改",appBaseResult.decryptData());
+
         HashMap<String,Object> params = new Gson().fromJson(appBaseResult.decryptData(),HashMap.class);
 		appUpdateService.deleteInfo(params);
         return AppBaseResult.success();

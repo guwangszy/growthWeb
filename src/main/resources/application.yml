@@ -50,3 +50,5 @@ jwtconfig:
         expire: 604800
         header: token
 
+file:
+    basePath=C:\upfile\transferFile

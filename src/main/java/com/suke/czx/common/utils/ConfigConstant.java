@@ -1,5 +1,8 @@
 package com.suke.czx.common.utils;
 
+
+import com.suke.czx.config.FileConfig;
+
 /**
  * 系统参数相关Key
  * @author czx
@@ -15,5 +18,5 @@ public class ConfigConstant {
     /**
      * 上传图片路径
      */
-    public final static String FILE_BASE_PATH = "D:\\upfile\\transferFile\\";
+    public final static String FILE_BASE_PATH = new FileConfig().fileBasePath;
 }

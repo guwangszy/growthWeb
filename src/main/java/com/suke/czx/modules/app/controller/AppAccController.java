@@ -1,10 +1,7 @@
 package com.suke.czx.modules.app.controller;
 
 import com.google.gson.Gson;
-import com.suke.czx.common.utils.AppBaseResult;
-import com.suke.czx.common.utils.PageUtils;
-import com.suke.czx.common.utils.Query;
-import com.suke.czx.common.utils.Tools;
+import com.suke.czx.common.utils.*;
 import com.suke.czx.modules.app.service.appUpdate.AppUpdateService;
 import com.suke.czx.modules.oss.entity.SysAccessoryEntity;
 import com.suke.czx.modules.oss.service.SysOssService;
@@ -92,7 +89,7 @@ public class AppAccController extends AbstractController {
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		String accessoryAddress=String.valueOf(jsonObject.get("accessoryAddress"));
-		String address="D:\\upfile\\transferFile\\"+accessoryAddress;
+		String address= ConfigConstant.FILE_BASE_PATH+accessoryAddress;
 		SysAccessoryEntity sysAcc=sysOssService.queryAccDetil(address);
 		JSONObject json=JSONObject.fromObject(sysAcc);
 		String content=Tools.readTxtFile(address);

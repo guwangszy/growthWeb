@@ -34,17 +34,24 @@ $(function () {
         	$("#jqGrid").closest(".ui-jqgrid-bdiv").css({ "overflow-x" : "hidden" }); 
         }
     });
+
+
+
 });
+
+
+
 
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
 		q:{
-			key: null
+            headline: null
 		},
 		showList: true,
 		title: null,
-        message: {}
+        message: {},
+        uuid:''
 	},
 	methods: {
 		query: function () {
@@ -54,7 +61,44 @@ var vm = new Vue({
 			vm.showList = false;
 			vm.title = "新增";
 			vm.message = {};
+            vm.uuid=vm.guid();
+            vm.message.uuid = vm.uuid;
+            new AjaxUpload('#upload', {
+                action: baseURL + 'sys/message/upload?token=' + token,
+                name: 'file',
+                autoSubmit:true,
+                responseType:"json",
+                data:{"uuid":vm.uuid},
+                onSubmit:function(file, extension){
+
+                    if (!(extension && /^(jpg)$/.test(extension.toLowerCase()))){
+                        alert('只支持jpg格式的文件！');
+                        return false;
+                    }
+                },
+                onComplete : function(file, r){
+                    if(r.code == 0){
+                        //vm.image=vm.baseUrl()+"/image/"+r.filename;
+                        alert('上传成功');
+                       // vm.reload();
+                    }else{
+                        alert(r.msg);
+                    }
+                }
+            });
 		},
+       /* baseUrl: function(){
+            //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+            var curWwwPath=window.document.location.href;
+            //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+            var pathName=window.document.location.pathname;
+            var pos=curWwwPath.indexOf(pathName);
+            //获取主机地址，如： http://localhost:8083
+            var localhostPaht=curWwwPath.substring(0,pos);
+            //获取带"/"的项目名，如：/uimcardprj
+            var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+            return(localhostPaht+projectName);
+        },*/
 		update: function () {
 			var id = getSelectedRow();
 			if(id == null){
@@ -67,18 +111,20 @@ var vm = new Vue({
                 vm.config = r.config;
             });*/
 		},
+
+
+
 		del: function () {
 			var id = getSelectedRow();
 			if(id == null){
 				return ;
 			}
-			
 			confirm('确定要删除选中的记录？', function(){
 				$.ajax({
 					type: "POST",
 				    url: baseURL + "sys/message/delete",
                     contentType: "application/json",
-				    data: JSON.stringify(id),
+				    data: id,
 				    success: function(r){
 						if(r.code == 0){
 							alert('操作成功', function(){
@@ -91,6 +137,12 @@ var vm = new Vue({
 				});
 			});
 		},
+         guid: function(){
+  		  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+       	 var r = Math.random()*10|0, v = c == 'x' ? r : (r&0x3|0x8);
+      	  return v.toString(10);
+  	  });
+	},
 		saveOrUpdate: function () {
             if(vm.validator()){
 				return ;

@@ -30,13 +30,13 @@ public class SysMessageServiceImpl implements SysMessageService {
 	}
 	//删除消息
 	@Override
-	public void delete(Long id) {
-		sysMessageDao.delete(id);
+	public void delete(Map<String,Object> map) {
+		sysMessageDao.delete(map);
 	}
 	//删除图片
 	@Override
-	public void deleteFile(Long id) {
-		sysMessageDao.deleteFile(id);
+	public void deleteFile(Map<String,Object> map) {
+		sysMessageDao.deleteFile(map);
 	}
 	//获取消息列表
 	@Override

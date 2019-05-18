@@ -18,8 +18,8 @@
 	</insert>
 	<!--新增发布-->
 	<insert id="saveIssue" parameterType="com.suke.czx.modules.sys.entity.SysIssueEntity">
-		insert into sys_issue(`advice_id`, `grade_id`, `user_id`,done_content,`create_time`)
-		values(#{adviceId},#{gradeId},#{userId},#{doneContent},now())
+		insert into sys_issue(id,`advice_id`, `grade_id`, `user_id`,done_content,`create_time`)
+		values(#{id},#{adviceId},#{gradeId},#{userId},#{doneContent},now())
 	</insert>
 	<!--新增评论-->
 	<insert id="saveComment" parameterType="com.suke.czx.modules.sys.entity.SysCommentEntity">
@@ -29,7 +29,12 @@
 	<!--获取通知表信息-->
 	<select id="queryAdviceList" parameterType="java.util.Map" resultType="java.util.Map">
 		select * from sys_advice s where s.grade_id=#{gradeId}
-		and ( s.frequency is NULL or <![CDATA[ ( s.start_time <= now()  and s.end_time >= now() and frequency = DAYOFWEEK(now()) ) ]]> or s.frequency=0 )
+		<if test="type = 1">
+			and s.frequency is NULL
+		</if>
+		<if test="type = 2">
+			and ( <![CDATA[ ( s.start_time <= now()  and s.end_time >= now() and frequency = DAYOFWEEK(now()) ) ]]> or s.frequency=0 )
+		</if>
 		and s.id not in  (select advice_id from sys_issue where DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d') AND user_id=#{userId})
 		 ORDER BY create_time DESC
 	</select>
@@ -58,6 +63,7 @@
 		LEFT JOIN sys_comment sc on sc.id=si.id
 		LEFT JOIN (select count(type) num,issue_id from sys_comment where type=1 and user_id=#{userId} GROUP BY issue_id) sb on sb.issue_id=si.id
 		where si.grade_id=#{gradeId}
+		and si.advice_id is not NULL
 		GROUP BY si.create_time desc
 	</select>
 	<!--获取评论list-->

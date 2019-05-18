@@ -20,7 +20,9 @@ public interface SysMessageDao extends BaseDao<Object> {
      */
     void saveFile(Map<String, Object> map);
 
-    void deleteFile(Long id);
+    int delete(Map<String, Object> map);
+
+    int deleteFile(Map<String, Object> map);
 
     List<Map<String,Object>> queryFileList(Map<String, Object> map);
 }

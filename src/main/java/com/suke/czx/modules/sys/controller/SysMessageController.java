@@ -5,6 +5,7 @@ import com.suke.czx.common.exception.RRException;
 import com.suke.czx.common.utils.PageUtils;
 import com.suke.czx.common.utils.Query;
 import com.suke.czx.common.utils.R;
+import com.suke.czx.modules.sys.entity.SysMessageEntity;
 import com.suke.czx.modules.sys.service.SysGrowUpService;
 import com.suke.czx.modules.sys.service.SysMessageService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +69,12 @@ public class SysMessageController extends AbstractController {
 	@SysLog("保存消息")
 	@RequestMapping("/save")
 	@RequiresPermissions("sys:message:save")
-	public R save(@RequestParam Map<String, Object> params){
+	public R save(@RequestBody SysMessageEntity message){
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("id",message.getUuid());
+		params.put("headline",message.getHeadline());
+		params.put("content",message.getContent());
+		params.put("create_user",getUserId());
 		sysMessageService.save(params);
 		
 		return R.ok();
@@ -78,11 +85,11 @@ public class SysMessageController extends AbstractController {
 	 */
 	@RequestMapping("/upload")
 	@RequiresPermissions("sys:message:upload")
-	public R upload(@RequestParam("file") MultipartFile file) throws Exception {
+	public R upload(@RequestParam("file") MultipartFile file,@RequestParam("uuid") String uuid) throws Exception {
 		if (file.isEmpty()) {
 			throw new RRException("上传文件不能为空");
 		}
-		sysGrowUpService.saveFile(file,file.getOriginalFilename(),getUser().getUsername(),"");
+		sysGrowUpService.saveFile(file,file.getOriginalFilename(),getUser().getUsername(),uuid);
 	/*	//getUser().getUsername();
 		//上传文件
 		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
@@ -94,7 +101,7 @@ public class SysMessageController extends AbstractController {
 		ossEntity.setCreateDate(new Date());
 		sysOssService.save(ossEntity);
 */
-		return R.ok();
+		return R.ok().put("filename",file.getOriginalFilename());
 	}
 
 
@@ -116,9 +123,11 @@ public class SysMessageController extends AbstractController {
 	@SysLog("删除消息")
 	@RequestMapping("/delete")
 	@RequiresPermissions("sys:message:delete")
-	public R delete(@RequestBody Long id){
-		sysMessageService.delete(id);
-		
+	public R delete(@RequestBody String id){
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("id",id);
+		sysMessageService.delete(params);
+		sysMessageService.deleteFile(params);
 		return R.ok();
 	}
 
@@ -128,8 +137,10 @@ public class SysMessageController extends AbstractController {
 	@SysLog("删除图片")
 	@RequestMapping("/deleteFile")
 	@RequiresPermissions("sys:message:deleteFile")
-	public R deleteFile(@RequestBody Long id){
-		sysMessageService.deleteFile(id);
+	public R deleteFile(@RequestBody String id){
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("id",id);
+		sysMessageService.deleteFile(params);
 
 		return R.ok();
 	}

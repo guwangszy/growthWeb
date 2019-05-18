@@ -30,12 +30,12 @@ public interface SysMessageService {
 	/**
 	 * 删除信息
 	 */
-	public void delete(Long id);
+	public void delete(Map<String,Object> map);
 
 	/**
 	 * 删除图片
 	 */
-	public void deleteFile(Long id);
+	public void deleteFile(Map<String,Object> map);
 	
 	/**
 	 * 获取List列表

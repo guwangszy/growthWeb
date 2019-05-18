@@ -42,10 +42,7 @@ $(function () {
         autoSubmit:true,
         responseType:"json",
         onSubmit:function(file, extension){
-           /* if(vm.config.type == null){
-                alert("云存储配置未配置");
-                return false;
-            }*/
+
             if (!(extension && /^(txt)$/.test(extension.toLowerCase()))){
                 alert('只支持txt格式的文件！');
                 return false;

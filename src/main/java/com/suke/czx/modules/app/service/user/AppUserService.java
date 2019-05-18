@@ -50,4 +50,11 @@ public class AppUserService extends ServiceSupport {
         insert("api.AppUserDao.save",param);
     }
 
+    public HashMap<String,Object> getUserInfo(Map<String,Object> params) throws Exception {
+        String userId = params.get("userId").toString();
+        HashMap<String,Object> user = findForObject("api.AppUserDao.queryObject", userId);
+        return user;
+    }
+
+
 }

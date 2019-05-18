@@ -19,4 +19,5 @@ public interface SysGrowUpService {
 
     List<Map<String,Object>> queryList(Map<String,Object> map);
     List<Map<String,Object>> queryFileList(Map<String,Object> map);
+
 }

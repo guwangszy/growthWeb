@@ -60,4 +60,12 @@ public class ApiLoginController {
         return AppBaseResult.success().setEncryptData(user);
     }
 
+    @PostMapping("user")
+    public AppBaseResult getUserInfo(@RequestBody AppBaseResult appBaseResult) throws Exception {
+        HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+        JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
+        //用户登录
+        HashMap<String,Object> user = appUserService.getUserInfo(jsonObject);
+        return AppBaseResult.success().setEncryptData(user);
+    }
 }

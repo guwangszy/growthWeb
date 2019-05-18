@@ -43,6 +43,7 @@ public class SysMessageServiceImpl implements SysMessageService {
 	public List<Map<String, Object>> queryList(Map<String, Object> map) {
 		return (List)sysMessageDao.queryList(map);
 	}
+
 	//获取消息列表总数
 	@Override
 	public int queryTotal(Map<String, Object> map) {

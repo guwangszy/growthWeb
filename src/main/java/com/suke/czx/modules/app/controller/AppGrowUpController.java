@@ -8,6 +8,7 @@ import com.suke.czx.modules.sys.controller.AbstractController;
 import com.suke.czx.modules.sys.entity.SysAdviceEntity;
 import com.suke.czx.modules.sys.entity.SysUserEntity;
 import com.suke.czx.modules.sys.service.SysGrowUpService;
+import com.suke.czx.modules.sys.service.SysMessageService;
 import com.suke.czx.modules.user.entity.UserEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -45,8 +46,28 @@ public class AppGrowUpController extends AbstractController{
 
     @Autowired
     private SysGrowUpService sysGrowUpService;
+    @Autowired
+    private SysMessageService sysMessageService;
 
+    /**
+     * 消息列表
+     */
+    @ApiOperation(value="消息列表", notes="消息列表")
+    @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
+    @PostMapping("/new/list")
+    public AppBaseResult newList(@RequestBody AppBaseResult appBaseResult)throws Exception{
 
+        HashMap<String,Object> params = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+        JSONObject jsonObject=JSONObject.fromObject(params.get("data"));
+        //查询列表数据
+        Query query = new Query(jsonObject);
+        query.isPaging(true);
+        List<Map<String,Object>> growUpList = sysMessageService.queryList(query);
+
+        /*List<HashMap<String,Object>> appUpdateList = appUpdateService.queryList(query);*/
+        PageUtils pageUtil = new PageUtils(growUpList, query.getTotle(), query.getLimit(), query.getPage());
+        return AppBaseResult.success().setEncryptData(pageUtil);
+    }
     /**
      * 成长册列表
      */

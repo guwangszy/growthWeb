@@ -4,7 +4,7 @@
 <mapper namespace="api.AppUserDao">
 
 	<select id="queryObject" resultType="java.util.HashMap">
-		select * from tb_user where user_id = #{value}
+		select * from sys_user where user_id = #{value}
 	</select>
 
 	<select id="queryList" resultType="java.util.HashMap">

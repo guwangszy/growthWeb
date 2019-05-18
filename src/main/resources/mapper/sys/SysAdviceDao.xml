@@ -23,7 +23,7 @@
 	</insert>
 	<!--修改作业-->
 	<update id="updateWork" parameterType="com.suke.czx.modules.sys.entity.SysIssueEntity">
-		update sys_user set`grade_id` = #{gradeId}, `advice_id` = #{adviceId},`user_id` = #{userId}, create_time = now(),`done_content` = #{doneContent}
+		update sys_issue set`grade_id` = #{gradeId}, `advice_id` = #{adviceId},`user_id` = #{userId}, create_time = now(),`done_content` = #{doneContent}
 		where id = #{id}
 	</update>
 	<!--新增评论-->

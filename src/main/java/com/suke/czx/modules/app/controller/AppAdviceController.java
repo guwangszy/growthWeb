@@ -160,17 +160,17 @@ public class AppAdviceController extends AbstractController {
 	public AppBaseResult updateWork(@RequestBody AppBaseResult appBaseResult)throws Exception{
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
-		//先删除图片
-		Map<String, Object> params=new HashMap<String, Object>();
-		params.put("id",jsonObject.getString("fkId"));
-		sysMessageService.deleteFile(params);
+		String uuid = jsonObject.getString("fkId");
 		//新增图片
 		MultipartFile multipartFile =null;
-		String uuid = jsonObject.getString("fkId");
 		if(jsonObject!=null&&jsonObject.containsKey("file")){
 			JSONArray jsonArray=jsonObject.getJSONArray("file");
 			String username =jsonObject.getString("username");
-			if(jsonArray!=null){
+			if(jsonArray!=null&&jsonArray.size()>0){
+				//先删除图片
+				Map<String, Object> params=new HashMap<String, Object>();
+				params.put("id",uuid);
+				sysMessageService.deleteFile(params);
 				for (Object files:jsonArray) {
 					JSONObject file=(JSONObject) files;
 					String fileCode =file.getString("fileCode");
@@ -184,7 +184,9 @@ public class AppAdviceController extends AbstractController {
 		}
 		SysIssueEntity issue =new SysIssueEntity();
 		issue.setId(uuid);
-		issue.setAdviceId(jsonObject.getLong("adviceId"));
+		if(jsonObject.containsKey("adviceId")){
+			issue.setAdviceId(jsonObject.getLong("adviceId"));
+		}
 		issue.setUserId(jsonObject.getLong("userId"));
 		issue.setGradeId(jsonObject.getLong("gradeId"));
 		if(jsonObject.containsKey("doneContent")){

@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @email object_czx@163.com
  * @date 2016年12月1日 下午10:30:02
  */
-@Mapper
+//@Mapper
 public interface ScheduleJobLogDao extends BaseDao<ScheduleJobLogEntity> {
 	
 }

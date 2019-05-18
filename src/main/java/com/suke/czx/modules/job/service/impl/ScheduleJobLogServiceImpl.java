@@ -10,7 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service("scheduleJobLogService")
+//@Service("scheduleJobLogService")
 public class ScheduleJobLogServiceImpl implements ScheduleJobLogService {
 	@Autowired
 	private ScheduleJobLogDao scheduleJobLogDao;

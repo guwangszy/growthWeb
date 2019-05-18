@@ -14,7 +14,7 @@ import java.util.Properties;
  * @email object_czx@163.com
  * @date 2017-04-20 23:38
  */
-@Configuration
+//@Configuration
 public class ScheduleConfig {
 
     @Bean

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  * @email object_czx@163.com
  * @date 2016年11月30日 下午1:34:24
  */
-@Component("testTask")
+//@Component("testTask")
 public class TestTask {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	

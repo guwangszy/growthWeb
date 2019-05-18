@@ -22,8 +22,8 @@ import java.util.Map;
  * @email object_czx@163.com
  * @date 2016年12月1日 下午10:39:52
  */
-@RestController
-@RequestMapping("/sys/scheduleLog")
+//@RestController
+//@/RequestMapping("/sys/scheduleLog")
 public class ScheduleJobLogController {
 	@Autowired
 	private ScheduleJobLogService scheduleJobLogService;

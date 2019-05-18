@@ -51,6 +51,7 @@ var vm = new Vue({
 		showList: true,
 		title: null,
         message: {},
+        image:'',
         uuid:''
 	},
 	methods: {
@@ -78,9 +79,12 @@ var vm = new Vue({
                 },
                 onComplete : function(file, r){
                     if(r.code == 0){
-                        //vm.image=vm.baseUrl()+"/image/"+r.filename;
+                        // vm.reload();
+                        // console.log(window.location.host+window.location.post)
+                        // console.log(baseURL)
+                        vm.image="http://"+window.location.host+baseURL+"image/"+r.filename;
                         alert('上传成功');
-                       // vm.reload();
+                        console.log(vm.message.image)
                     }else{
                         alert(r.msg);
                     }

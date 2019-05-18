@@ -64,12 +64,13 @@ var vm = new Vue({
 			vm.message = {};
             vm.uuid=vm.guid();
             vm.message.uuid = vm.uuid;
+            vm.image="";
             new AjaxUpload('#upload', {
                 action: baseURL + 'sys/message/upload?token=' + token,
                 name: 'file',
                 autoSubmit:true,
                 responseType:"json",
-                data:{"uuid":vm.uuid},
+                data:{"uuid":vm.uuid,"id":""},
                 onSubmit:function(file, extension){
 
                     if (!(extension && /^(jpg)$/.test(extension.toLowerCase()))){

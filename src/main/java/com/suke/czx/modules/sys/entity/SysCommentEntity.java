@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class SysCommentEntity {
 	private Long id;
-	private Long issueId;
+	private String issueId;
 	private Long type;
 	private Long userId;
 	private String commentContent;
@@ -26,11 +26,11 @@ public class SysCommentEntity {
 		this.id = id;
 	}
 
-	public Long getIssueId() {
+	public String getIssueId() {
 		return issueId;
 	}
 
-	public void setIssueId(Long issueId) {
+	public void setIssueId(String issueId) {
 		this.issueId = issueId;
 	}
 

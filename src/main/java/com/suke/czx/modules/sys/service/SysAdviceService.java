@@ -57,4 +57,14 @@ public interface SysAdviceService {
 	 * 获取通知List列表
 	 */
 	public List<Map<String, Object>> queryAdviceList(Map<String, Object> map);
+
+	/**
+	 * 获取通知List列表
+	 */
+	public List<Map<String, Object>> queryWorkList(Map<String, Object> map);
+
+	/**
+	 * 修改
+	 */
+	public void updateWork(SysIssueEntity issue);
 }

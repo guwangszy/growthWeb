@@ -2,6 +2,7 @@ package com.suke.czx.modules.app.controller;
 
 import com.google.gson.Gson;
 import com.suke.czx.common.utils.AppBaseResult;
+import com.suke.czx.common.utils.BASE64DecodedMultipartFile;
 import com.suke.czx.common.utils.PageUtils;
 import com.suke.czx.common.utils.Query;
 import com.suke.czx.modules.app.service.appUpdate.AppUpdateService;
@@ -10,10 +11,13 @@ import com.suke.czx.modules.sys.entity.SysAdviceEntity;
 import com.suke.czx.modules.sys.entity.SysCommentEntity;
 import com.suke.czx.modules.sys.entity.SysIssueEntity;
 import com.suke.czx.modules.sys.service.SysAdviceService;
+import com.suke.czx.modules.sys.service.SysGrowUpService;
+import com.suke.czx.modules.sys.service.SysMessageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -22,13 +26,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -50,6 +52,13 @@ public class AppAdviceController extends AbstractController {
 
 	@Autowired
 	private SysAdviceService sysAdviceService;
+
+	@Autowired
+	private SysGrowUpService sysGrowUpService;
+
+
+	@Autowired
+	private SysMessageService sysMessageService;
 	
 	/**
 	 * 任务列表
@@ -64,7 +73,7 @@ public class AppAdviceController extends AbstractController {
         Query query = new Query(jsonObject);
         query.isPaging(true);
 		List<Map<String, Object>> appUpdateList = sysAdviceService.queryAdviceList(query);
-		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for(Map<String, Object> map :appUpdateList){
 			map.put("create_time",sdf.format(map.get("create_time")));
 		}
@@ -102,7 +111,7 @@ public class AppAdviceController extends AbstractController {
 	}
 
 	/**
-	 * 新增发布
+	 * 新增发布/作业
 	 */
 	@ApiOperation(value="新增发布", notes="新增发布")
 	@ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
@@ -110,7 +119,26 @@ public class AppAdviceController extends AbstractController {
 	public AppBaseResult saveIssue(@RequestBody AppBaseResult appBaseResult)throws Exception{
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
+		//新增图片
+		MultipartFile multipartFile =null;
+		String uuid = UUID.randomUUID().toString();
+		if(jsonObject!=null&&jsonObject.containsKey("file")){
+			JSONArray jsonArray=jsonObject.getJSONArray("file");
+			String username =jsonObject.getString("username");
+			if(jsonArray!=null){
+				for (Object files:jsonArray) {
+					JSONObject file=(JSONObject) files;
+					String fileCode =file.getString("fileCode");
+					String fileName =file.getString("fileName");
+					if(StringUtils.isNotEmpty(fileCode)&&StringUtils.isNotEmpty(fileName)) {
+						multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(fileCode);
+						sysGrowUpService.saveFile(multipartFile,fileName,username,uuid);
+					}
+				}
+			}
+		}
 		SysIssueEntity issue =new SysIssueEntity();
+		issue.setId(uuid);
 		issue.setAdviceId(jsonObject.getLong("adviceId"));
 		issue.setUserId(jsonObject.getLong("userId"));
 		issue.setGradeId(jsonObject.getLong("gradeId"));
@@ -122,6 +150,72 @@ public class AppAdviceController extends AbstractController {
 	}
 
 	/**
+	 * 修改作业
+	 */
+	@ApiOperation(value="修改作业", notes="修改作业")
+	@ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
+	@PostMapping("/appAdvice/updateWork")
+	public AppBaseResult updateWork(@RequestBody AppBaseResult appBaseResult)throws Exception{
+		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
+		//先删除图片
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("id",jsonObject.getString("fkId"));
+		sysMessageService.deleteFile(params);
+		//新增图片
+		MultipartFile multipartFile =null;
+		String uuid = jsonObject.getString("fkId");
+		if(jsonObject!=null&&jsonObject.containsKey("file")){
+			JSONArray jsonArray=jsonObject.getJSONArray("file");
+			String username =jsonObject.getString("username");
+			if(jsonArray!=null){
+				for (Object files:jsonArray) {
+					JSONObject file=(JSONObject) files;
+					String fileCode =file.getString("fileCode");
+					String fileName =file.getString("fileName");
+					if(StringUtils.isNotEmpty(fileCode)&&StringUtils.isNotEmpty(fileName)) {
+						multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(fileCode);
+						sysGrowUpService.saveFile(multipartFile,fileName,username,uuid);
+					}
+				}
+			}
+		}
+		SysIssueEntity issue =new SysIssueEntity();
+		issue.setId(uuid);
+		issue.setAdviceId(jsonObject.getLong("adviceId"));
+		issue.setUserId(jsonObject.getLong("userId"));
+		issue.setGradeId(jsonObject.getLong("gradeId"));
+		if(jsonObject.containsKey("doneContent")){
+			issue.setDoneContent(jsonObject.getString("doneContent"));
+		}
+		sysAdviceService.updateWork(issue);
+		return AppBaseResult.success();
+	}
+
+	/**
+	 * 作业列表
+	 */
+	@ApiOperation(value="作业列表", notes="作业列表")
+	@ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token", required = true,dataType = "string", paramType = "query", defaultValue = "")})
+	@PostMapping("/appAdvice/workList")
+	public AppBaseResult workList(@RequestBody AppBaseResult appBaseResult)throws Exception{
+		HashMap<String,Object> params = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
+		JSONObject jsonObject=JSONObject.fromObject(params.get("data"));
+		//查询列表数据
+		Query query = new Query(jsonObject);
+		query.isPaging(true);
+		List<Map<String, Object>> appUpdateList = sysAdviceService.queryAdviceList(query);
+		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		for(Map<String, Object> map :appUpdateList){
+			map.put("create_time",sdf.format(map.get("create_time")));
+		}
+		PageUtils pageUtil = new PageUtils(appUpdateList, query.getTotle(), query.getLimit(), query.getPage());
+		return AppBaseResult.success().setEncryptData(pageUtil);
+	}
+
+
+
+	/**
 	 * 新增评论
 	 */
 	@ApiOperation(value="新增评论", notes="新增评论")
@@ -131,7 +225,7 @@ public class AppAdviceController extends AbstractController {
 		HashMap<String,Object> pd = new Gson().fromJson(appBaseResult.toString(),HashMap.class);
 		JSONObject jsonObject=JSONObject.fromObject(pd.get("data"));
 		SysCommentEntity comment =new SysCommentEntity();
-		comment.setIssueId(jsonObject.getLong("issueId"));
+		comment.setIssueId(jsonObject.getString("issueId"));
 		comment.setType(jsonObject.getLong("type"));
 		comment.setUserId(jsonObject.getLong("userId"));
 		if(jsonObject.containsKey("commentContent")){

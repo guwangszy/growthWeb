@@ -11,7 +11,7 @@ import java.util.Date;
  * @date 2016年12月4日 下午6:43:36
  */
 public class SysIssueEntity {
-	private Long id;
+	private String id;
 	private Long adviceId;
 	private Long userId;
 	private String doneContent;
@@ -27,11 +27,11 @@ public class SysIssueEntity {
 		this.gradeId = gradeId;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

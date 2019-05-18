@@ -83,7 +83,7 @@ public class SysMessageController extends AbstractController {
 	@RequestMapping("/upload")
 	@RequiresPermissions("sys:message:upload")
 	public R upload(@RequestParam("file") MultipartFile file,@RequestParam("uuid") String uuid,@RequestParam("id") String id) throws Exception {
-		if(id!= null){
+		if(id!= null || id!=""){
 			Map<String, Object> params=new HashMap<String, Object>();
 			params.put("id",id);
 			sysMessageService.deleteFile(params);
@@ -114,8 +114,12 @@ public class SysMessageController extends AbstractController {
 	@SysLog("修改消息")
 	@RequestMapping("/update")
 	@RequiresPermissions("sys:message:update")
-	public R update(@RequestParam Map<String, Object> params){
-
+	public R update(@RequestBody SysMessageEntity message){
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("id",message.getId());
+		params.put("headline",message.getHeadline());
+		params.put("content",message.getContent());
+		params.put("create_user",getUserId());
 		sysMessageService.update(params);
 		
 		return R.ok();

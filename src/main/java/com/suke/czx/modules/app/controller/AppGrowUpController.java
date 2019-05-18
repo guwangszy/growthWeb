@@ -81,6 +81,11 @@ public class AppGrowUpController extends AbstractController{
         //查询列表数据
         Query query = new Query(jsonObject);
         query.isPaging(true);
+        if(jsonObject.containsKey("roleId")){
+            if("2".equals(jsonObject.getString("roleId"))){
+                jsonObject.put("studentId",jsonObject.getString("userId"));
+            }
+        }
         List<Map<String,Object>> growUpList = sysGrowUpService.queryList(query);
 
         /*List<HashMap<String,Object>> appUpdateList = appUpdateService.queryList(query);*/

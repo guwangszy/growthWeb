@@ -14,6 +14,34 @@ public class SysMessageEntity {
 	private String id;
 
 	private String headline;
+	private String accessoryAddress;
+	private String accessoryName;
+	private String accessorySuffix;
+
+	public String getAccessoryAddress() {
+		return accessoryAddress;
+	}
+
+	public void setAccessoryAddress(String accessoryAddress) {
+		this.accessoryAddress = accessoryAddress;
+	}
+
+	public String getAccessoryName() {
+		return accessoryName;
+	}
+
+	public void setAccessoryName(String accessoryName) {
+		this.accessoryName = accessoryName;
+	}
+
+	public String getAccessorySuffix() {
+		return accessorySuffix;
+	}
+
+	public void setAccessorySuffix(String accessorySuffix) {
+		this.accessorySuffix = accessorySuffix;
+	}
+
 	private String uuid;
 
 	public String getUuid() {

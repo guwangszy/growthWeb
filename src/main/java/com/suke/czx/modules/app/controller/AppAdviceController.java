@@ -139,7 +139,9 @@ public class AppAdviceController extends AbstractController {
 		}
 		SysIssueEntity issue =new SysIssueEntity();
 		issue.setId(uuid);
-		issue.setAdviceId(jsonObject.getLong("adviceId"));
+		if(jsonObject.containsKey("adviceId")){
+			issue.setAdviceId(jsonObject.getLong("adviceId"));
+		}
 		issue.setUserId(jsonObject.getLong("userId"));
 		issue.setGradeId(jsonObject.getLong("gradeId"));
 		if(jsonObject.containsKey("doneContent")){
@@ -204,11 +206,18 @@ public class AppAdviceController extends AbstractController {
 		//查询列表数据
 		Query query = new Query(jsonObject);
 		query.isPaging(true);
-		List<Map<String, Object>> appUpdateList = sysAdviceService.queryAdviceList(query);
-		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		List<Map<String, Object>> appUpdateList = sysAdviceService.queryWorkList(query);
+		for(Map<String,Object> map:appUpdateList){
+			String issueId=String.valueOf(map.get("id"));
+			Map<String,Object> omap =new HashMap<String,Object>() ;
+			omap.put("issueId",issueId);
+			List<Map<String,Object>> commentList=sysAdviceService.queryCommentList(omap);
+			map.put("commentList",commentList);
+		}
+	/*	SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for(Map<String, Object> map :appUpdateList){
 			map.put("create_time",sdf.format(map.get("create_time")));
-		}
+		}*/
 		PageUtils pageUtil = new PageUtils(appUpdateList, query.getTotle(), query.getLimit(), query.getPage());
 		return AppBaseResult.success().setEncryptData(pageUtil);
 	}
@@ -247,7 +256,7 @@ public class AppAdviceController extends AbstractController {
 		Long id=jsonObject.getLong("id");
 		SysAdviceEntity advice=sysAdviceService.queryObject(id);
 		JSONObject json=JSONObject.fromObject(advice);
-		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		json.put("createTime",sdf.format(advice.getCreateTime()));
 		json.put("startTime",sdf.format(advice.getStartTime()));
 		json.put("endTime",sdf.format(advice.getEndTime()));
@@ -268,8 +277,10 @@ public class AppAdviceController extends AbstractController {
 		query.isPaging(true);
 		List<Map<String,Object>> cycleList = sysAdviceService.queryCycleList(query);
 		for(Map<String,Object> map:cycleList){
-		Long issueId=Long.parseLong(String.valueOf(map.get("id")));
-		List<Map<String,Object>> commentList=sysAdviceService.queryCommentList(issueId);
+			String issueId=String.valueOf(map.get("id"));
+			Map<String,Object> omap =new HashMap<String,Object>() ;
+			omap.put("issueId",issueId);
+		List<Map<String,Object>> commentList=sysAdviceService.queryCommentList(omap);
 		map.put("commentList",commentList);
 		}
 		PageUtils pageUtil = new PageUtils(cycleList, query.getTotle(), query.getLimit(), query.getPage());

@@ -54,8 +54,8 @@ public class SysAdviceServiceImpl implements SysAdviceService {
 	}
 
 	@Override
-	public List<Map<String, Object>> queryCommentList(Long id) {
-		return sysAdviceDao.queryCommentList(id);
+	public List<Map<String, Object>> queryCommentList(Map<String, Object> map) {
+		return sysAdviceDao.queryCommentList(map);
 	}
 
 

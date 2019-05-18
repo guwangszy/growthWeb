@@ -51,7 +51,7 @@ public interface SysAdviceService {
 	/**
 	 * 获取评论List列表
 	 */
-	public List<Map<String, Object>> queryCommentList(Long id);
+	public List<Map<String, Object>> queryCommentList(Map<String, Object> map);
 
 	/**
 	 * 获取通知List列表

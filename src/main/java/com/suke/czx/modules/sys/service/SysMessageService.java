@@ -1,5 +1,7 @@
 package com.suke.czx.modules.sys.service;
 
+import com.suke.czx.modules.sys.entity.SysMessageEntity;
+
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +47,11 @@ public interface SysMessageService {
 	 * 获取总记录数
 	 */
 	public int queryTotal(Map<String, Object> map);
+
+	/**
+	 * 获取信息
+	 */
+	public SysMessageEntity queryObject(String id);
 	
 	/*public SysConfigEntity queryObject(Long id);
 	

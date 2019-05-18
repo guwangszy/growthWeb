@@ -47,7 +47,7 @@ public interface SysAdviceDao extends BaseDao<SysAdviceEntity> {
 
 	List <Map<String, Object>> queryCycleList(Map<String, Object> map);
 
-	List <Map<String, Object>> queryCommentList(Long id);
+	List <Map<String, Object>> queryCommentList(Map<String, Object> map );
 
 	List <Map<String, Object>> queryAdviceList(Map<String, Object> map);
 

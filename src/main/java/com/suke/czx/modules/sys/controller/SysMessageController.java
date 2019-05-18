@@ -10,10 +10,7 @@ import com.suke.czx.modules.sys.service.SysGrowUpService;
 import com.suke.czx.modules.sys.service.SysMessageService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -85,7 +82,13 @@ public class SysMessageController extends AbstractController {
 	 */
 	@RequestMapping("/upload")
 	@RequiresPermissions("sys:message:upload")
-	public R upload(@RequestParam("file") MultipartFile file,@RequestParam("uuid") String uuid) throws Exception {
+	public R upload(@RequestParam("file") MultipartFile file,@RequestParam("uuid") String uuid,@RequestParam("id") String id) throws Exception {
+		if(id!= null){
+			Map<String, Object> params=new HashMap<String, Object>();
+			params.put("id",id);
+			sysMessageService.deleteFile(params);
+			uuid=id;
+		}
 		if (file.isEmpty()) {
 			throw new RRException("上传文件不能为空");
 		}
@@ -112,6 +115,7 @@ public class SysMessageController extends AbstractController {
 	@RequestMapping("/update")
 	@RequiresPermissions("sys:message:update")
 	public R update(@RequestParam Map<String, Object> params){
+
 		sysMessageService.update(params);
 		
 		return R.ok();
@@ -143,6 +147,17 @@ public class SysMessageController extends AbstractController {
 		sysMessageService.deleteFile(params);
 
 		return R.ok();
+	}
+
+	/**
+	 * 消息详情
+	 */
+	@RequestMapping("/info/{id}")
+	@RequiresPermissions("sys:message:info")
+	public R info(@PathVariable("id") String id){
+		SysMessageEntity message = sysMessageService.queryObject(id);
+
+		return R.ok().put("message", message);
 	}
 
 }

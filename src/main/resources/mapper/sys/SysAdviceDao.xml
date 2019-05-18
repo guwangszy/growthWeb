@@ -73,7 +73,14 @@
 		LEFT JOIN sys_user u
 		on u.user_id=g.user_id
 		WHERE advice_id is null
+		<if test="roleId == 1  or roleId == 2 ">
+			and g.grade_id =#{gradeId}
+		</if>
+		<if test="roleId == 2">
+			and g.user_id =#{userId}
+		</if>
 		order by g.create_time desc
+
 	</select>
 
 	<!--获取通知表信息-->
@@ -104,7 +111,7 @@
 		GROUP BY si.create_time desc
 	</select>
 	<!--获取评论list-->
-	<select id="queryCommentList"  resultType="java.util.Map">
+	<select id="queryCommentList"   parameterType="java.util.Map" resultType="java.util.Map">
 		select
 		su.username,
 		sc.comment_content commentContent

@@ -1,6 +1,7 @@
 package com.suke.czx.modules.sys.service.impl;
 
 import com.suke.czx.modules.sys.dao.SysMessageDao;
+import com.suke.czx.modules.sys.entity.SysMessageEntity;
 import com.suke.czx.modules.sys.service.SysMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +49,11 @@ public class SysMessageServiceImpl implements SysMessageService {
 	@Override
 	public int queryTotal(Map<String, Object> map) {
 		return sysMessageDao.queryTotal(map);
+	}
+
+	//获取消息列表总数
+	@Override
+	public SysMessageEntity queryObject(String id) {
+		return sysMessageDao.queryObject(id);
 	}
 }

@@ -1,5 +1,6 @@
 package com.suke.czx.modules.sys.dao;
 
+import com.suke.czx.modules.sys.entity.SysMessageEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public interface SysMessageDao extends BaseDao<Object> {
     /**
      * 根据key，查询value
      */
+
+    SysMessageEntity queryObject(String id);
+
     void saveFile(Map<String, Object> map);
 
     int delete(Map<String, Object> map);

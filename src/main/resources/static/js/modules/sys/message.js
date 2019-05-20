@@ -64,13 +64,15 @@ var vm = new Vue({
 			vm.message = {};
             vm.uuid=vm.guid();
             vm.message.uuid = vm.uuid;
+            var id = vm.message.uuid
+            console.log("==========="+id)
             vm.image="";
             new AjaxUpload('#upload', {
                 action: baseURL + 'sys/message/upload?token=' + token,
                 name: 'file',
                 autoSubmit:true,
                 responseType:"json",
-                data:{"uuid":vm.uuid,"id":""},
+                data:{"uuid":id,"id":""},
                 onSubmit:function(file, extension){
 
                     if (!(extension && /^(jpg)$/.test(extension.toLowerCase()))){
@@ -159,7 +161,7 @@ var vm = new Vue({
 		},
          guid: function(){
   		  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-       	 var r = Math.random()*10|0, v = c == 'x' ? r : (r&0x3|0x8);
+       	    var r = Math.random()*10|0, v = c == 'x' ? r : (r&0x3|0x8);
       	  return v.toString(10);
   	  });
 	},
@@ -167,7 +169,7 @@ var vm = new Vue({
             if(vm.validator()){
 				return ;
 			}
-
+            console.log("=====+++++++++======",vm.message)
 			var url = vm.message.id == null ? "sys/message/save" : "sys/message/update";
 			$.ajax({
 				type: "POST",

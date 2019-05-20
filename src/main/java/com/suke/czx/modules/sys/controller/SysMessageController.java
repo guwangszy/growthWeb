@@ -8,6 +8,7 @@ import com.suke.czx.common.utils.R;
 import com.suke.czx.modules.sys.entity.SysMessageEntity;
 import com.suke.czx.modules.sys.service.SysGrowUpService;
 import com.suke.czx.modules.sys.service.SysMessageService;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -83,7 +84,7 @@ public class SysMessageController extends AbstractController {
 	@RequestMapping("/upload")
 	@RequiresPermissions("sys:message:upload")
 	public R upload(@RequestParam("file") MultipartFile file,@RequestParam("uuid") String uuid,@RequestParam("id") String id) throws Exception {
-		if(id!= null || id!=""){
+		if(StringUtils.isNotEmpty(id)){
 			Map<String, Object> params=new HashMap<String, Object>();
 			params.put("id",id);
 			sysMessageService.deleteFile(params);
